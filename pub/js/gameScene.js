@@ -189,7 +189,12 @@ class GameScene extends Phaser.Scene {
         }, null, this);
 
         // setting collisions between the player and the ring group
+        var ringPlaying = false;
         this.physics.add.overlap(this.player, this.ringGroup, function(player, ring){
+            if (ringPlaying == false){
+                this.sound.play("collect");
+                ringPlaying = true;
+            }
             ring.anims.play("fade");
             this.tweens.add({
                 targets: ring,
@@ -202,20 +207,22 @@ class GameScene extends Phaser.Scene {
                     ring.anims.play("rotate");
                     this.ringGroup.killAndHide(ring);
                     this.ringGroup.remove(ring);
+                    ringPlaying = false;
                 }
             });
-            this.sound.play("collect");
         }, null, this);
 
         // setting collisions between the player and the spike group
+        var spikesPlaying = false;
         this.physics.add.overlap(this.player, this.spikeGroup, function(player, spike){
-
+            if (spikesPlaying == false) {
+                this.sound.play('spikes');
+                spikesPlaying = true;
+            }
             this.dying = true;
             this.player.anims.play('die');
-            //this.player.setFrame(2);
             this.player.body.setVelocityY(-200);
             this.physics.world.removeCollider(this.platformCollider);
-            this.sound.play("spikes");
         }, null, this);
 
         // checking for input
