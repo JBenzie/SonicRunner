@@ -10,6 +10,9 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         
+        this.load.audio("collect", "pub/assets/audio/ring.wav");
+        this.load.audio("jump", "pub/assets/audio/jump.wav");
+        this.load.audio("die", "pub/assets/audio/die.wav");
         this.load.image("platform", "pub/assets/images/platform/flat1.png");
         this.load.image("frame", "pub/assets/images/sonic_frame.png");
         this.load.image("bg", "pub/assets/images/bg.png");
@@ -112,7 +115,7 @@ class GameScene extends Phaser.Scene {
         //background
         this.bg = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'bg').setScale(1.25);
         this.frame = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'frame').setScale(1.15);
-        this.frame.setDepth(3);
+        this.frame.setDepth(5);
 
         // group with all active mountains.
         this.mountainGroup = this.add.group();
@@ -204,6 +207,7 @@ class GameScene extends Phaser.Scene {
         // setting collisions between the player and the coin group
         this.physics.add.overlap(this.player, this.coinGroup, function(player, coin){
             coin.anims.play("fade");
+            this.sound.play("collect");
             this.tweens.add({
                 targets: coin,
                 y: coin.y - 100,
@@ -225,6 +229,7 @@ class GameScene extends Phaser.Scene {
 
             this.dying = true;
             this.player.anims.play('die');
+            this.sound.play("die");
             this.player.setFrame(2);
             this.player.body.setVelocityY(-200);
             this.physics.world.removeCollider(this.platformCollider);
@@ -425,6 +430,7 @@ class GameScene extends Phaser.Scene {
 
             // stops animation
             this.player.play('jump');
+            this.sound.play('jump');
         }
     }
 
