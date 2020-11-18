@@ -1,31 +1,17 @@
 {
-    "name": "SonicRunner",
-    "version": "1.0.0",
-    "description": "An Endless Runner Game Featuring Your FAVORITE Blue Hedgehog!",
-    "main": "index.html",
-    "scripts": {
-      "build": "webpack",
-      "start": "npm run build && webpack-dev-server --host=0.0.0.0 --port=$PORT --disable-host-check"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/JBenzie/SonicRunner.git"
-    },
-    "license": "MIT",
-    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-    "bugs": {
-      "url": "https://github.com/JBenzie/SonicRunner.git/issues"
-    },
-    "homepage": "https://github.com/JBenzie/SonicRunner",
-    "devDependencies": {
-      "canvas": "^2.1.0",
-      "phaser": "^3.3.0",
-      "raw-loader": "^0.5.1",
-      "webpack": "^3.12.0",
-      "webpack-dev-server": "^2.11.0"
-    },
-    "engines": {
-      "node": "14.15"
-    },
-    "heroku-run-build-script": true
+  "name": "sonicrunner",
+  "version": "1.0.0",
+  "description": "An infinite runner featuring your favorite blue hedgehog! Built for Wyatt!",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^3.0.1"
   }
+}
