@@ -9,7 +9,7 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        
+        // load assets
         this.load.audio("collect", "pub/assets/audio/ring.wav");
         this.load.audio("jump", "pub/assets/audio/jump.wav");
         this.load.audio("die", "pub/assets/audio/die.wav");
@@ -19,35 +19,24 @@ class GameScene extends Phaser.Scene {
         this.load.image("frame", "pub/assets/images/sonic_frame.png");
         this.load.image("bg", "pub/assets/images/greenHill.png");
         this.load.image("spikes", "pub/assets/images/spikes.png");
+        this.load.image("tree", "pub/assets/images/palm.png");
 
-        // player is a sprite sheet made by 24x48 pixels
+        // load player spritesheet
         this.load.spritesheet("player", "pub/assets/images/sonicSprite.png", {
             frameWidth: 36,
             frameHeight: 45
         });
 
-        // the coin is a sprite sheet made by 20x20 pixels
+        // load ring spritesheet
         this.load.spritesheet("ring", "pub/assets/images/ringsSprite.png", {
             frameWidth: 16,
             frameHeight: 18
         });
 
-        // the firecamp is a sprite sheet made by 32x58 pixels
-        /* this.load.spritesheet("fire", "fire.png", {
-            frameWidth: 40,
-            frameHeight: 70
-        }); */
-
-        // mountains are a sprite sheet made by 512x512 pixels
-        this.load.spritesheet("mountain", "pub/assets/images/palm.png", {
-            frameWidth: 361,
-            frameHeight: 640
-        });
-
     }
     create() {
         // define any objects
-        console.log("Gotta go FAST..!");
+        console.log("GOTTA GO FAST..!");
         var self = this;
         this.socket = io();
 
@@ -80,7 +69,7 @@ class GameScene extends Phaser.Scene {
             repeat: 0
         });
 
-        // setting coin animation
+        // setting ring animation
         this.anims.create({
             key: "rotate",
             frames: this.anims.generateFrameNumbers("ring", {
@@ -103,28 +92,17 @@ class GameScene extends Phaser.Scene {
             repeat: -1
         });
 
-        // setting fire animation
-        /* this.anims.create({
-            key: "burn",
-            frames: this.anims.generateFrameNumbers("fire", {
-                start: 0,
-                end: 4
-            }),
-            frameRate: 15,
-            repeat: -1
-        }); */
-
         //background
         this.bg = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'bg').setScale(1);
         this.frame = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'frame').setScale(1.15);
         this.frame.setDepth(5);
 
-        this.music = this.sound.add("theme", { volume: 0.3 });
+        this.music = this.sound.add("theme", { volume: 0.5 });
         this.music.loop = true;
         this.music.play();
 
-        // group with all active mountains.
-        this.mountainGroup = this.add.group();
+        // group with all active trees.
+        this.treeGroup = this.add.group();
 
         // group with all active platforms.
         this.platformGroup = this.add.group({
@@ -144,44 +122,44 @@ class GameScene extends Phaser.Scene {
             }
         });
 
-        // group with all active coins.
-        this.coinGroup = this.add.group({
+        // group with all active rings.
+        this.ringGroup = this.add.group({
 
-            // once a coin is removed, it's added to the pool
-            removeCallback: function(coin){
-                coin.scene.coinPool.add(coin)
+            // once a ring is removed, it's added to the pool
+            removeCallback: function(ring){
+                ring.scene.ringPool.add(ring)
             }
         });
 
-        // coin pool
-        this.coinPool = this.add.group({
+        // ring pool
+        this.ringPool = this.add.group({
 
-            // once a coin is removed from the pool, it's added to the active coins group
-            removeCallback: function(coin){
-                coin.scene.coinGroup.add(coin)
+            // once a ring is removed from the pool, it's added to the active rings group
+            removeCallback: function(ring){
+                ring.scene.ringGroup.add(ring)
             }
         });
 
-        // group with all active firecamps.
+        // group with all active spikecamps.
         this.spikeGroup = this.add.group({
 
-            // once a firecamp is removed, it's added to the pool
+            // once a spikecamp is removed, it's added to the pool
             removeCallback: function(spike){
                 spike.scene.spikePool.add(spike)
             }
         });
 
-        // fire pool
+        // spike pool
         this.spikePool = this.add.group({
 
-            // once a fire is removed from the pool, it's added to the active fire group
+            // once a spike is removed from the pool, it's added to the active spike group
             removeCallback: function(spike){
                 spike.scene.spikeGroup.add(spike)
             }
         });
 
-        // adding a mountain
-        this.addMountains()
+        // adding a tree
+        this.addTrees()
 
         // keeping track of added platforms
         this.addedPlatforms = 0;
@@ -210,26 +188,26 @@ class GameScene extends Phaser.Scene {
             }
         }, null, this);
 
-        // setting collisions between the player and the coin group
-        this.physics.add.overlap(this.player, this.coinGroup, function(player, coin){
-            coin.anims.play("fade");
+        // setting collisions between the player and the ring group
+        this.physics.add.overlap(this.player, this.ringGroup, function(player, ring){
+            ring.anims.play("fade");
             this.tweens.add({
-                targets: coin,
-                y: coin.y - 100,
+                targets: ring,
+                y: ring.y - 100,
                 alpha: 0,
                 duration: 800,
                 ease: "Cubic.easeOut",
                 callbackScope: this,
                 onComplete: function(){
-                    coin.anims.play("rotate");
-                    this.coinGroup.killAndHide(coin);
-                    this.coinGroup.remove(coin);
+                    ring.anims.play("rotate");
+                    this.ringGroup.killAndHide(ring);
+                    this.ringGroup.remove(ring);
                 }
             });
             this.sound.play("collect");
         }, null, this);
 
-        // setting collisions between the player and the fire group
+        // setting collisions between the player and the spike group
         this.physics.add.overlap(this.player, this.spikeGroup, function(player, spike){
 
             this.dying = true;
@@ -250,7 +228,8 @@ class GameScene extends Phaser.Scene {
         if(this.player.y > this.game.config.height){
             this.sound.play('die');
             this.music.stop();
-            this.scene.start("gameScene");
+            this.socket.disconnect();
+            this.scene.restart();
         }
 
         this.player.x = this.game.gameOptions.playerStartPosition;
@@ -270,15 +249,15 @@ class GameScene extends Phaser.Scene {
             }
         }, this);
 
-        // recycling coins
-        this.coinGroup.getChildren().forEach(function(coin){
-            if(coin.x < - coin.displayWidth / 2){
-                this.coinGroup.killAndHide(coin);
-                this.coinGroup.remove(coin);
+        // recycling rings
+        this.ringGroup.getChildren().forEach(function(ring){
+            if(ring.x < - ring.displayWidth / 2){
+                this.ringGroup.killAndHide(ring);
+                this.ringGroup.remove(ring);
             }
         }, this);
 
-        // recycling fire
+        // recycling spike
         this.spikeGroup.getChildren().forEach(function(spike){
             if(spike.x < - spike.displayWidth / 2){
                 this.spikeGroup.killAndHide(spike);
@@ -286,15 +265,15 @@ class GameScene extends Phaser.Scene {
             }
         }, this);
 
-        // recycling mountains
-        this.mountainGroup.getChildren().forEach(function(mountain){
-            if(mountain.x < - mountain.displayWidth){
-                let rightmostMountain = this.getRightmostMountain();
-                mountain.x = rightmostMountain + Phaser.Math.Between(100, 350);
-                mountain.y = this.game.config.height + Phaser.Math.Between(0, 100);
-                mountain.setFrame(Phaser.Math.Between(0, 3))
+        // recycling trees
+        this.treeGroup.getChildren().forEach(function(tree){
+            if(tree.x < - tree.displayWidth){
+                let rightmostTree = this.getRightmostTree();
+                tree.x = rightmostTree + Phaser.Math.Between(100, 350);
+                tree.y = this.game.config.height + Phaser.Math.Between(0, 100);
+                tree.setFrame(Phaser.Math.Between(0, 3))
                 if(Phaser.Math.Between(0, 1)){
-                    mountain.setDepth(1);
+                    tree.setDepth(1);
                 }
             }
         }, this);
@@ -311,29 +290,29 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    // adding mountains
-    addMountains(){
-        let rightmostMountain = this.getRightmostMountain();
-        if(rightmostMountain < this.game.config.width * 3){
-            let mountain = this.physics.add.sprite(rightmostMountain + Phaser.Math.Between(100, 350), this.game.config.height + Phaser.Math.Between(0, 100), "mountain").setScale(0.75);
-            mountain.setOrigin(0.5, 1);
-            mountain.body.setVelocityX(this.game.gameOptions.mountainSpeed * -1)
-            this.mountainGroup.add(mountain);
+    // adding trees
+    addTrees(){
+        let rightmostTree = this.getRightmostTree();
+        if(rightmostTree < this.game.config.width * 3){
+            let tree = this.physics.add.sprite(rightmostTree + Phaser.Math.Between(100, 350), this.game.config.height + Phaser.Math.Between(0, 100), "tree").setScale(0.75);
+            tree.setOrigin(0.5, 1);
+            tree.body.setVelocityX(this.game.gameOptions.treeSpeed * -1)
+            this.treeGroup.add(tree);
             if(Phaser.Math.Between(0, 1)){
-                mountain.setDepth(1);
+                tree.setDepth(1);
             }
-            mountain.setFrame(Phaser.Math.Between(0, 3))
-            this.addMountains()
+            tree.setFrame(Phaser.Math.Between(0, 3))
+            this.addTrees()
         }
     }
 
-    // getting rightmost mountain x position
-    getRightmostMountain(){
-        let rightmostMountain = -300;
-        this.mountainGroup.getChildren().forEach(function(mountain){
-            rightmostMountain = Math.max(rightmostMountain, mountain.x);
+    // getting rightmost tree x position
+    getRightmostTree(){
+        let rightmostTree = -300;
+        this.treeGroup.getChildren().forEach(function(tree){
+            rightmostTree = Math.max(rightmostTree, tree.x);
         })
-        return rightmostMountain;
+        return rightmostTree;
     }
 
     // the core of the script: platform are added from the pool or created on the fly
@@ -364,30 +343,30 @@ class GameScene extends Phaser.Scene {
         // if this is not the starting platform...
         if(this.addedPlatforms > 1){
 
-            // is there a coin over the platform?
-            if(Phaser.Math.Between(1, 100) <= this.game.gameOptions.coinPercent){
-                if(this.coinPool.getLength()){
-                    let coin = this.coinPool.getFirst();
-                    coin.x = posX;
-                    coin.y = posY - 96;
-                    coin.alpha = 1;
-                    coin.active = true;
-                    coin.visible = true;
-                    coin.setSize(16, 18, true);
-                    this.coinPool.remove(coin);
+            // is there a ring over the platform?
+            if(Phaser.Math.Between(1, 100) <= this.game.gameOptions.ringPercent){
+                if(this.ringPool.getLength()){
+                    let ring = this.ringPool.getFirst();
+                    ring.x = posX;
+                    ring.y = posY - 96;
+                    ring.alpha = 1;
+                    ring.active = true;
+                    ring.visible = true;
+                    ring.setSize(16, 18, true);
+                    this.ringPool.remove(ring);
                 }
                 else{
-                    let coin = this.physics.add.sprite(posX, posY - 96, "coin").setScale(1.55);
-                    coin.setSize(16, 18, true);
-                    coin.setImmovable(true);
-                    coin.setVelocityX(platform.body.velocity.x);
-                    coin.anims.play("rotate");
-                    coin.setDepth(2);
-                    this.coinGroup.add(coin);
+                    let ring = this.physics.add.sprite(posX, posY - 96, "ring").setScale(1.55);
+                    ring.setSize(16, 18, true);
+                    ring.setImmovable(true);
+                    ring.setVelocityX(platform.body.velocity.x);
+                    ring.anims.play("rotate");
+                    ring.setDepth(2);
+                    this.ringGroup.add(ring);
                 }
             }
 
-            // is there a fire over the platform?
+            // is there a spike over the platform?
             if(Phaser.Math.Between(1, 100) <= this.game.gameOptions.spikePercent){
                 if(this.spikePool.getLength()){
                     let spike = this.spikePool.getFirst();

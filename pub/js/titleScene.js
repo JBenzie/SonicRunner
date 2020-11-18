@@ -57,7 +57,7 @@ class TitleScene extends Phaser.Scene {
 	create() {
 		
 		// background music
-		var music = this.sound.add("title", { volume: 0.3 });
+		var music = this.sound.add("title", { volume: 0.5 });
         //music.loop = true;
         music.play();
 

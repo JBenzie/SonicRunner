@@ -27,8 +27,8 @@ window.onload = function() {
     // platform speed range, in pixels per second
     platformSpeedRange: [250, 250],
 
-    // mountain speed, in pixels per second
-    mountainSpeed: 60,
+    // tree speed, in pixels per second
+    treeSpeed: 60,
 
     // spawn range, how far should be the rightmost platform from the right edge
     // before next platform spawns, in pixels
@@ -58,10 +58,10 @@ window.onload = function() {
     // consecutive jumps allowed
     jumps: 2,
 
-    // % of probability a coin appears on the platform
-    coinPercent: 55,
+    // % of probability a ring appears over the platform
+    ringPercent: 65,
 
-    // % of probability a fire appears on the platform
+    // % of probability spikes appear on the platform
     spikePercent: 25
   }
   window.focus();
