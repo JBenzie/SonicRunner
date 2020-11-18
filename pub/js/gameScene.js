@@ -13,6 +13,8 @@ class GameScene extends Phaser.Scene {
         this.load.audio("collect", "pub/assets/audio/ring.wav");
         this.load.audio("jump", "pub/assets/audio/jump.wav");
         this.load.audio("die", "pub/assets/audio/die.wav");
+        this.load.audio("spikes", "pub/assets/audio/spikes.wav");
+        this.load.audio("theme", "pub/assets/audio/greenHill.mp3");
         this.load.image("platform", "pub/assets/images/platform/platform.png");
         this.load.image("frame", "pub/assets/images/sonic_frame.png");
         this.load.image("bg", "pub/assets/images/greenHill.png");
@@ -117,6 +119,10 @@ class GameScene extends Phaser.Scene {
         this.frame = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'frame').setScale(1.15);
         this.frame.setDepth(5);
 
+        this.music = this.sound.add("theme", { volume: 0.3 });
+        this.music.loop = true;
+        this.music.play();
+
         // group with all active mountains.
         this.mountainGroup = this.add.group();
 
@@ -207,7 +213,6 @@ class GameScene extends Phaser.Scene {
         // setting collisions between the player and the coin group
         this.physics.add.overlap(this.player, this.coinGroup, function(player, coin){
             coin.anims.play("fade");
-            this.sound.play("collect");
             this.tweens.add({
                 targets: coin,
                 y: coin.y - 100,
@@ -221,7 +226,7 @@ class GameScene extends Phaser.Scene {
                     this.coinGroup.remove(coin);
                 }
             });
-
+            this.sound.play("collect");
         }, null, this);
 
         // setting collisions between the player and the fire group
@@ -229,11 +234,10 @@ class GameScene extends Phaser.Scene {
 
             this.dying = true;
             this.player.anims.play('die');
-            this.sound.play("die");
-            this.player.setFrame(2);
+            //this.player.setFrame(2);
             this.player.body.setVelocityY(-200);
             this.physics.world.removeCollider(this.platformCollider);
-
+            this.sound.play("spikes");
         }, null, this);
 
         // checking for input
@@ -244,6 +248,8 @@ class GameScene extends Phaser.Scene {
         //constantly running loop
         // game over
         if(this.player.y > this.game.config.height){
+            this.sound.play('die');
+            this.music.stop();
             this.scene.start("gameScene");
         }
 
@@ -367,10 +373,12 @@ class GameScene extends Phaser.Scene {
                     coin.alpha = 1;
                     coin.active = true;
                     coin.visible = true;
+                    coin.setSize(16, 18, true);
                     this.coinPool.remove(coin);
                 }
                 else{
                     let coin = this.physics.add.sprite(posX, posY - 96, "coin").setScale(1.55);
+                    coin.setSize(16, 18, true);
                     coin.setImmovable(true);
                     coin.setVelocityX(platform.body.velocity.x);
                     coin.anims.play("rotate");
@@ -388,14 +396,14 @@ class GameScene extends Phaser.Scene {
                     spike.alpha = 1;
                     spike.active = true;
                     spike.visible = true;
-                    spike.setSize(28, 28, true);
+                    spike.setSize(40, 23, true);
                     this.spikePool.remove(spike);
                 }
                 else{
-                    let spike = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth) - 10, posY - 45, "spikes");
+                    let spike = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth) - 10, posY - 45, "spikes").setScale(1.05);
                     spike.setImmovable(true);
                     spike.setVelocityX(platform.body.velocity.x);
-                    spike.setSize(28, 28, true)
+                    spike.setSize(40, 23, true)
                     //spike.anims.play("burn");
                     spike.setDepth(1);
                     this.spikeGroup.add(spike);

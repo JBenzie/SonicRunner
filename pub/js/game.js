@@ -15,7 +15,10 @@ window.onload = function() {
     backgroundColor: 0x000000,
     physics:{
       default: "arcade",
-      },
+      arcade: {
+        debug: false
+      }        
+    } 
   };
   var game = new Phaser.Game(config);
   // global game options
