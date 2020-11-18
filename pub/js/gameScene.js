@@ -13,9 +13,9 @@ class GameScene extends Phaser.Scene {
         this.load.audio("collect", "pub/assets/audio/ring.wav");
         this.load.audio("jump", "pub/assets/audio/jump.wav");
         this.load.audio("die", "pub/assets/audio/die.wav");
-        this.load.image("platform", "pub/assets/images/platform/flat1.png");
+        this.load.image("platform", "pub/assets/images/platform/platform.png");
         this.load.image("frame", "pub/assets/images/sonic_frame.png");
-        this.load.image("bg", "pub/assets/images/bg.png");
+        this.load.image("bg", "pub/assets/images/greenHill.png");
         this.load.image("spikes", "pub/assets/images/spikes.png");
 
         // player is a sprite sheet made by 24x48 pixels
@@ -71,7 +71,7 @@ class GameScene extends Phaser.Scene {
 
         this.anims.create({
             key: "die",
-            frameRate: 6,
+            frameRate: 10,
             frames: this.anims.generateFrameNumbers("player", { 
                 start: 8, 
                 end: 9 }),
@@ -113,7 +113,7 @@ class GameScene extends Phaser.Scene {
         }); */
 
         //background
-        this.bg = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'bg').setScale(1.25);
+        this.bg = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'bg').setScale(1);
         this.frame = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'frame').setScale(1.15);
         this.frame.setDepth(5);
 
@@ -239,21 +239,6 @@ class GameScene extends Phaser.Scene {
         // checking for input
         this.input.on("pointerdown", this.jump, this);
 
-
-
-        // GAME =============================================================================================================
-
-        // camera
-
-        // SCORE ============================================================================================================
-
-
-        // PLAYERS ==========================================================================================================
-
-
-        // STARS ============================================================================================================
-
-
     }
     update() {
         //constantly running loop
@@ -361,7 +346,7 @@ class GameScene extends Phaser.Scene {
             platform.tileScaleX = 1 / platform.scaleX;
         }
         else{
-            platform = this.add.tileSprite(posX, posY, platformWidth, 100, "platform");
+            platform = this.add.tileSprite(posX, posY, platformWidth, 78, "platform");
             this.physics.add.existing(platform);
             platform.body.setImmovable(true);
             platform.body.setVelocityX(Phaser.Math.Between(this.game.gameOptions.platformSpeedRange[0], this.game.gameOptions.platformSpeedRange[1]) * -1);
@@ -398,18 +383,19 @@ class GameScene extends Phaser.Scene {
             if(Phaser.Math.Between(1, 100) <= this.game.gameOptions.spikePercent){
                 if(this.spikePool.getLength()){
                     let spike = this.spikePool.getFirst();
-                    spike.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth);
-                    spike.y = posY - 46;
+                    spike.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth - 5) - 10;
+                    spike.y = posY - 45;
                     spike.alpha = 1;
                     spike.active = true;
                     spike.visible = true;
+                    spike.setSize(28, 28, true);
                     this.spikePool.remove(spike);
                 }
                 else{
-                    let spike = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 59, "spikes");
+                    let spike = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth) - 10, posY - 45, "spikes");
                     spike.setImmovable(true);
                     spike.setVelocityX(platform.body.velocity.x);
-                    spike.setSize(8, 2, true)
+                    spike.setSize(28, 28, true)
                     //spike.anims.play("burn");
                     spike.setDepth(1);
                     this.spikeGroup.add(spike);

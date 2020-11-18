@@ -22,7 +22,7 @@ window.onload = function() {
   game.gameOptions = {
 
     // platform speed range, in pixels per second
-    platformSpeedRange: [200, 200],
+    platformSpeedRange: [250, 250],
 
     // mountain speed, in pixels per second
     mountainSpeed: 60,

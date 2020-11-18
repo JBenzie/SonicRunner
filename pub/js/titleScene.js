@@ -43,7 +43,8 @@ class TitleScene extends Phaser.Scene {
 		  percentText.destroy();
 		});
 
-        this.load.image('frame', '/pub/assets/images/sonic_frame.png');
+		this.load.image('frame', '/pub/assets/images/sonic_frame.png');
+		this.load.image("bg", "pub/assets/images/greenHill.png");
 
 		//this.load.bitmapFont('soupofjustice', 'pub/assets/fonts/soupofjustice.png', 'pub/assets/fonts/soupofjustice.fnt');
 
@@ -64,7 +65,10 @@ class TitleScene extends Phaser.Scene {
         const width = this.scale.width;
         const height = this.scale.height;
 	    
-		this.bg = this.add.sprite(screenCenterX, screenCenterY, "frame").setScale(0.85);
+		//background
+        this.bg = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'bg').setScale(1);
+        this.frame = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'frame').setScale(1.15);
+        this.frame.setDepth(5);
 		
 		this.input.once('pointerdown', () => {
 			//this.sound.play('click');
