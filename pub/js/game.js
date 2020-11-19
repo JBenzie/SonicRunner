@@ -62,7 +62,7 @@ window.onload = function() {
     ringPercent: 65,
 
     // % of probability spikes appear on the platform
-    spikePercent: 65,
+    spikePercent: 30,
 
     // turn bg music on/off
     musicPlaying: false
