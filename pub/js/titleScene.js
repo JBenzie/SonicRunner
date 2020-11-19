@@ -44,12 +44,13 @@ class TitleScene extends Phaser.Scene {
 		});
 
 		this.load.image('frame', '/pub/assets/images/sonic_frame.png');
-		this.load.image("bg", "pub/assets/images/greenHill.png");
-
+		this.load.image("titleBg", "pub/assets/images/titleBg.png");
+		this.load.image('start', 'pub/assets/images/start.png');
 		//this.load.bitmapFont('soupofjustice', 'pub/assets/fonts/soupofjustice.png', 'pub/assets/fonts/soupofjustice.fnt');
 
 		this.load.audio('title', 'pub/assets/audio/title.mp3');
 		this.load.audio('start', 'pub/assets/audio/start.wav');
+		this.load.audio("theme", "pub/assets/audio/greenHill.mp3");
 		//this.load.audio('click', 'pub/assets/audio/zapThreeToneUp.mp3');
 		
 	}
@@ -57,24 +58,34 @@ class TitleScene extends Phaser.Scene {
 	create() {
 		
 		// background music
-		var music = this.sound.add("title", { volume: 0.5 });
-        //music.loop = true;
-        music.play();
+		var titleMusic = this.sound.add("title", { volume: 0.5 });
+		titleMusic.play();
 
-	    const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
-        const width = this.scale.width;
-        const height = this.scale.height;
+		this.music = this.sound.add("theme", { volume: 0.5 });
+        this.music.loop = true;
+
+        const width = this.game.config.width;
+        const height = this.scale.game.config.height;
 	    
 		//background
-        this.bg = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'bg').setScale(1);
-        this.frame = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'frame').setScale(1.15);
-        this.frame.setDepth(5);
+        this.titleBg = this.add.image(width / 2, height / 2, 'titleBg').setScale(.85);
+        this.frame = this.add.image(width / 2, height / 2, 'frame').setScale(1.15);
+		this.frame.setDepth(5);
 		
-		this.input.once('pointerdown', () => {
+		var startBtn = this.physics.add.image(width / 2, height / 2 + 150 , 'start').setScale(.75).setInteractive({ cursor: 'pointer' });
+		
+		startBtn.on('pointerover', function(pointer) {
+			startBtn.setScale(.85);
+		});
+		startBtn.on('pointerout', function(pointer) {
+			startBtn.setScale(.75);
+		});
+
+		startBtn.on('pointerdown', () => {
 			//this.sound.play('click');
 			this.sound.play('start');
-			music.stop();
+			titleMusic.stop();
+			this.music.play();
             this.scene.start('gameScene');
 
         });

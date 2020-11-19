@@ -14,7 +14,6 @@ class GameScene extends Phaser.Scene {
         this.load.audio("jump", "pub/assets/audio/jump.wav");
         this.load.audio("die", "pub/assets/audio/die.wav");
         this.load.audio("spikes", "pub/assets/audio/spikes.wav");
-        this.load.audio("theme", "pub/assets/audio/greenHill.mp3");
         this.load.image("platform", "pub/assets/images/platform/platform.png");
         this.load.image("frame", "pub/assets/images/sonic_frame.png");
         this.load.image("bg", "pub/assets/images/greenHill.png");
@@ -96,10 +95,6 @@ class GameScene extends Phaser.Scene {
         this.bg = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'bg').setScale(1);
         this.frame = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'frame').setScale(1.15);
         this.frame.setDepth(5);
-
-        this.music = this.sound.add("theme", { volume: 0.5 });
-        this.music.loop = true;
-        this.music.play();
 
         // group with all active trees.
         this.treeGroup = this.add.group();
@@ -234,7 +229,6 @@ class GameScene extends Phaser.Scene {
         // game over
         if(this.player.y > this.game.config.height){
             this.sound.play('die');
-            this.music.stop();
             this.socket.disconnect();
             this.scene.restart();
         }
@@ -377,7 +371,7 @@ class GameScene extends Phaser.Scene {
             if(Phaser.Math.Between(1, 100) <= this.game.gameOptions.spikePercent){
                 if(this.spikePool.getLength()){
                     let spike = this.spikePool.getFirst();
-                    spike.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth - 5) - 10;
+                    spike.x = posX - platformWidth / 2 + Phaser.Math.Between(25, platformWidth - 25);
                     spike.y = posY - 45;
                     spike.alpha = 1;
                     spike.active = true;
@@ -386,7 +380,7 @@ class GameScene extends Phaser.Scene {
                     this.spikePool.remove(spike);
                 }
                 else{
-                    let spike = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth) - 10, posY - 45, "spikes").setScale(1.05);
+                    let spike = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(25, platformWidth - 25), posY - 45, "spikes").setScale(1.05);
                     spike.setImmovable(true);
                     spike.setVelocityX(platform.body.velocity.x);
                     spike.setSize(40, 23, true)
