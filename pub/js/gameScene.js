@@ -6,6 +6,7 @@ class GameScene extends Phaser.Scene {
     init() {
         // initialize game variables
         this.gameOver = false;
+        this.score = 0;
     }
 
     preload() {
@@ -19,6 +20,9 @@ class GameScene extends Phaser.Scene {
         this.load.image("bg", "pub/assets/images/greenHill.png");
         this.load.image("spikes", "pub/assets/images/spikes.png");
         this.load.image("tree", "pub/assets/images/palm.png");
+
+        // load Google WebFont script
+        this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
 
         // load player spritesheet
         this.load.spritesheet("player", "pub/assets/images/sonicSprite.png", {
@@ -95,6 +99,23 @@ class GameScene extends Phaser.Scene {
         this.bg = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'bg').setScale(1);
         this.frame = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'frame').setScale(1.15);
         this.frame.setDepth(5);
+
+        //ring counter
+        var frameRect = this.frame.getBounds();
+        this.ring = this.physics.add.sprite(frameRect.x + 225, frameRect.y + 150, "ring").setScale(1.65);
+        this.ring.anims.play('rotate');
+        this.ring.setDepth(6);
+        
+        WebFont.load({
+            google: {
+                families: [ 'Play', 'Orbitron', 'Russo One' ]
+            },
+            active: function ()
+            {
+                }
+        });
+        var ringRect = this.ring.getBounds();
+        this.scoreText = this.add.text(frameRect.x + 250, ringRect.y, this.score, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 
         // group with all active trees.
         this.treeGroup = this.add.group();
@@ -189,6 +210,8 @@ class GameScene extends Phaser.Scene {
             if (ringPlaying == false){
                 this.sound.play("collect");
                 ringPlaying = true;
+                this.score ++;
+                this.scoreText.setText(this.score);
             }
             ring.anims.play("fade");
             this.tweens.add({
@@ -229,6 +252,8 @@ class GameScene extends Phaser.Scene {
         // game over
         if(this.player.y > this.game.config.height){
             this.sound.play('die');
+            this.socket.emit('scoreUpdate', {score: this.score });
+            console.log(`Sending score update: ${this.score}.`);
             this.socket.disconnect();
             this.scene.restart();
         }

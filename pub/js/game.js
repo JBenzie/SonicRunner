@@ -67,6 +67,13 @@ window.onload = function() {
     // turn bg music on/off
     musicPlaying: false
   }
+
+  // global game variables
+  game.globalVars = {
+    //highscore
+    highScore: 0
+  }
+
   window.focus();
   resize();
   window.addEventListener("resize", resize, false);

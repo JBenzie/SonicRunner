@@ -11,9 +11,30 @@ app.use('/pub', express.static(path.join(__dirname, 'pub')));
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
+
+// game variables
+var leaderboard = {
+  playerID: null,
+  playerName: null,
+  highscore: 0
+};
  
 io.on('connection', function (socket) {
   console.log('Sweet..a user has connected!');
+
+  socket.on('scoreUpdate', function(scoreData) {
+    console.log(`scoreData: ${scoreData.score}`);
+    if(scoreData.score > leaderboard.highscore){
+      leaderboard.highscore = scoreData.score;
+      console.log(`Updating highscore: ${leaderboard.highscore}.`);
+      io.emit('leaderboardUpdate', leaderboard);
+    }
+  });
+  
+  socket.on('getLeaderboard', function() {
+    console.log(`Sending highscore: ${leaderboard.highscore}.`);
+    socket.emit('leaderboardUpdate', leaderboard);
+  });
 
   // player disconnect
   socket.on('disconnect', function () {

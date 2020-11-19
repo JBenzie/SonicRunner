@@ -51,13 +51,35 @@ class TitleScene extends Phaser.Scene {
 		this.load.audio('title', 'pub/assets/audio/title.mp3');
 		this.load.audio('start', 'pub/assets/audio/start.wav');
 		this.load.audio("theme", "pub/assets/audio/greenHill.mp3");
-		//this.load.audio('click', 'pub/assets/audio/zapThreeToneUp.mp3');
+		
+		// load Google WebFont script
+		this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
 		
 	}
 
 	create() {
+		var self = this;
+		this.socket = io();
+		this.highscore;
+		this.socket.emit('getLeaderboard');
+		WebFont.load({
+            google: {
+                families: [ 'Play', 'Orbitron', 'Russo One' ]
+            },
+            active: function ()
+            {
+                }
+        });		
+		this.socket.on('leaderboardUpdate', function(data) {
+			console.log(`Received highscore: ${data.highscore}.`);
+			self.highscore = data.highscore;
+			self.highscoreText = self.add.text(width / 2 - 110, height / 2 + 250, `HIGHSCORE: ${self.highscore}`, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
+		});
 		
 		// background music
+		if(this.music){
+			this.music.stop();
+		}
 		var titleMusic = this.sound.add("title", { volume: 0.5 });
 		titleMusic.play();
 
@@ -73,7 +95,7 @@ class TitleScene extends Phaser.Scene {
 		this.frame.setDepth(5);
 		
 		var startBtn = this.physics.add.image(width / 2, height / 2 + 150 , 'start').setScale(.75).setInteractive({ cursor: 'pointer' });
-		
+
 		startBtn.on('pointerover', function(pointer) {
 			startBtn.setScale(.85);
 		});
