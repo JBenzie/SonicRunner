@@ -47,7 +47,7 @@ window.onload = function() {
     platformHeighScale: 20,
 
     // platform max and min height, as screen height ratio
-    platformVerticalLimit: [0.4, 0.8],
+    platformVerticalLimit: [0.4, 0.88],
 
     // player gravity
     playerGravity: 900,
@@ -76,8 +76,11 @@ window.onload = function() {
 
   // global game variables
   game.globalVars = {
-    //highscore
-    highScore: 0
+    // highscore
+    highScore: 0,
+
+    // player avatar
+    character: 'sonic'
   }
 
   window.focus();

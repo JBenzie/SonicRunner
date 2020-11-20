@@ -7,6 +7,8 @@ class GameScene extends Phaser.Scene {
         // initialize game variables
         this.gameOver = false;
         this.score = 0;
+        this.character = this.game.globalVars.character;
+        console.log(`Character: ${this.character}`);
     }
 
     preload() {
@@ -26,11 +28,31 @@ class GameScene extends Phaser.Scene {
         // load Google WebFont script
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
 
-        // load player spritesheet
-        this.load.spritesheet("player", "pub/assets/images/sonicSprite.png", {
-            frameWidth: 36,
-            frameHeight: 45
-        });
+        switch (this.character) {
+            case 'sonic':
+                // load sonic spritesheet
+                this.load.spritesheet("sonic", "pub/assets/images/sonicSprite.png", {
+                    frameWidth: 36,
+                    frameHeight: 45
+                });
+                break;
+
+            case 'tails':
+                // load tails spritesheet
+                this.load.spritesheet("tails", "pub/assets/images/tails.png", {
+                    frameWidth: 44,
+                    frameHeight: 45
+                });
+                break;
+        
+            default:
+                // load sonic spritesheet
+                this.load.spritesheet("sonic", "pub/assets/images/sonicSprite.png", {
+                    frameWidth: 36,
+                    frameHeight: 45
+                });
+                break;
+        }
 
         // load ring spritesheet
         this.load.spritesheet("ring", "pub/assets/images/ringsSprite.png", {
@@ -45,34 +67,99 @@ class GameScene extends Phaser.Scene {
         var self = this;
         this.socket = io();
 
-        // setting player animation
-        this.anims.create({
-            key: "run",
-            frames: this.anims.generateFrameNumbers("player", {
-                start: 0,
-                end: 3
-            }),
-            frameRate: 15,
-            repeat: -1
-        });
+        switch (this.character) {
+            case 'sonic':
+                // setting player animation
+                this.anims.create({
+                    key: "run",
+                    frames: this.anims.generateFrameNumbers("sonic", {
+                        start: 0,
+                        end: 3
+                    }),
+                    frameRate: 15,
+                    repeat: -1
+                });
 
-        this.anims.create({
-            key: "jump",
-            frameRate: 13,
-            frames: this.anims.generateFrameNumbers("player", { 
-                start: 4, 
-                end: 7 }),
-            repeat: 2
-        });
+                this.anims.create({
+                    key: "jump",
+                    frameRate: 13,
+                    frames: this.anims.generateFrameNumbers("sonic", { 
+                        start: 4, 
+                        end: 7 }),
+                    repeat: 2
+                });
 
-        this.anims.create({
-            key: "die",
-            frameRate: 10,
-            frames: this.anims.generateFrameNumbers("player", { 
-                start: 8, 
-                end: 9 }),
-            repeat: 0
-        });
+                this.anims.create({
+                    key: "die",
+                    frameRate: 10,
+                    frames: this.anims.generateFrameNumbers("sonic", { 
+                        start: 8, 
+                        end: 8 }),
+                    repeat: 0
+                });
+                break;
+
+            case 'tails':
+                // setting player animation
+                this.anims.create({
+                    key: "run",
+                    frames: this.anims.generateFrameNumbers("tails", {
+                        start: 0,
+                        end: 4
+                    }),
+                    frameRate: 15,
+                    repeat: -1
+                });
+
+                this.anims.create({
+                    key: "jump",
+                    frameRate: 13,
+                    frames: this.anims.generateFrameNumbers("tails", { 
+                        start: 5, 
+                        end: 9 }),
+                    repeat: 2
+                });
+
+                this.anims.create({
+                    key: "die",
+                    frameRate: 10,
+                    frames: this.anims.generateFrameNumbers("tails", { 
+                        start: 10, 
+                        end: 10 }),
+                    repeat: 0
+                });
+                break;
+        
+            default:
+                this.anims.create({
+                    key: "run",
+                    frames: this.anims.generateFrameNumbers("sonic", {
+                        start: 0,
+                        end: 3
+                    }),
+                    frameRate: 15,
+                    repeat: -1
+                });
+
+                this.anims.create({
+                    key: "jump",
+                    frameRate: 13,
+                    frames: this.anims.generateFrameNumbers("sonic", { 
+                        start: 4, 
+                        end: 7 }),
+                    repeat: 2
+                });
+
+                this.anims.create({
+                    key: "die",
+                    frameRate: 10,
+                    frames: this.anims.generateFrameNumbers("sonic", { 
+                        start: 8, 
+                        end: 8 }),
+                    repeat: 0
+                });
+                break;
+        }
 
         // setting ring animation
         this.anims.create({
@@ -110,14 +197,21 @@ class GameScene extends Phaser.Scene {
         
         WebFont.load({
             google: {
-                families: [ 'Play', 'Orbitron', 'Russo One' ]
+                families: [ 'Atomic Age', 'Orbitron', 'Russo One' ]
             },
             active: function ()
             {
                 }
         });
+        
         var ringRect = this.ring.getBounds();
         this.scoreText = this.add.text(frameRect.x + 250, ringRect.y, this.score, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
+        this.highscoreText = this.add.text(frameRect.x + frameRect.width - 400, ringRect.y, 'HIGHSCORE: 0', { fontFamily: 'Orbitron', fontSize: 18, color: '#ffffff', align: 'right' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
+        this.socket.emit('getLeaderboard');
+        this.socket.on('leaderboardUpdate', function(data){
+            console.log(`Received leaderboard update: ${data.highscore}.`);
+            self.highscoreText.setText(`HIGHSCORE: ${data.highscore}`);
+        });
 
         // group with all active trees.
         this.treeGroup = this.add.group();
@@ -206,7 +300,7 @@ class GameScene extends Phaser.Scene {
         this.addPlatform(this.game.config.width, this.game.config.width / 2, this.game.config.height * this.game.gameOptions.platformVerticalLimit[1]);
 
         // adding the player;
-        this.player = this.physics.add.sprite(this.game.gameOptions.playerStartPosition, this.game.config.height * 0.4, "player").setScale(1.25);
+        this.player = this.physics.add.sprite(this.game.gameOptions.playerStartPosition, this.game.config.height * 0.4, this.character).setScale(1.25);
         this.player.setSize(this.player.width, 15, true);
         this.player.setGravityY(this.game.gameOptions.playerGravity);
         this.player.setDepth(3);
