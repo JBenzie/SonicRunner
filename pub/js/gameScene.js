@@ -20,6 +20,8 @@ class GameScene extends Phaser.Scene {
         this.load.image("bg", "pub/assets/images/greenHill.png");
         this.load.image("spikes", "pub/assets/images/spikes.png");
         this.load.image("tree", "pub/assets/images/palm.png");
+        this.load.image("totem", "pub/assets/images/totem.png");
+        this.load.image("flower", "pub/assets/images/sunflower.png");
 
         // load Google WebFont script
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
@@ -120,6 +122,23 @@ class GameScene extends Phaser.Scene {
         // group with all active trees.
         this.treeGroup = this.add.group();
 
+        // group with all active sunflowers.
+        this.flowerGroup = this.add.group({
+            removeCallback: function(flower){
+                flower.scene.flowerPool.add(flower);
+            }
+        });
+
+        // flower pool
+        this.flowerPool = this.add.group({
+            removeCallback: function(flower){
+                flower.scene.flowerGroup.add(flower);
+            }
+        });
+
+        // group with all active totems.
+        this.totemGroup = this.add.group();
+
         // group with all active platforms.
         this.platformGroup = this.add.group({
 
@@ -156,10 +175,10 @@ class GameScene extends Phaser.Scene {
             }
         });
 
-        // group with all active spikecamps.
+        // group with all active spikes.
         this.spikeGroup = this.add.group({
 
-            // once a spikecamp is removed, it's added to the pool
+            // once a spike is removed, it's added to the pool
             removeCallback: function(spike){
                 spike.scene.spikePool.add(spike)
             }
@@ -291,13 +310,20 @@ class GameScene extends Phaser.Scene {
             }
         }, this);
 
+        // recycling flower
+        this.flowerGroup.getChildren().forEach(function(flower){
+            if(flower.x < - flower.displayWidth / 2){
+                this.flowerGroup.killAndHide(flower);
+                this.flowerGroup.remove(flower);
+            }
+        }, this);
+
         // recycling trees
         this.treeGroup.getChildren().forEach(function(tree){
             if(tree.x < - tree.displayWidth){
                 let rightmostTree = this.getRightmostTree();
                 tree.x = rightmostTree + Phaser.Math.Between(100, 350);
                 tree.y = this.game.config.height + Phaser.Math.Between(0, 100);
-                tree.setFrame(Phaser.Math.Between(0, 3))
                 if(Phaser.Math.Between(0, 1)){
                     tree.setDepth(1);
                 }
@@ -319,15 +345,14 @@ class GameScene extends Phaser.Scene {
     // adding trees
     addTrees(){
         let rightmostTree = this.getRightmostTree();
-        if(rightmostTree < this.game.config.width * 3){
-            let tree = this.physics.add.sprite(rightmostTree + Phaser.Math.Between(100, 350), this.game.config.height + Phaser.Math.Between(0, 100), "tree").setScale(0.75);
+        if(rightmostTree < this.game.config.width * 5){
+            let tree = this.physics.add.sprite(rightmostTree + Phaser.Math.Between(100, 350), this.game.config.height + Phaser.Math.Between(0, 100), "tree").setScale(0.75); //change to vary tree size
             tree.setOrigin(0.5, 1);
             tree.body.setVelocityX(this.game.gameOptions.treeSpeed * -1)
             this.treeGroup.add(tree);
             if(Phaser.Math.Between(0, 1)){
                 tree.setDepth(1);
             }
-            tree.setFrame(Phaser.Math.Between(0, 3))
             this.addTrees()
         }
     }
@@ -351,6 +376,7 @@ class GameScene extends Phaser.Scene {
             platform.y = posY;
             platform.active = true;
             platform.visible = true;
+            platform.setDepth(3);
             this.platformPool.remove(platform);
             let newRatio =  platformWidth / platform.displayWidth;
             platform.displayWidth = platformWidth;
@@ -361,7 +387,7 @@ class GameScene extends Phaser.Scene {
             this.physics.add.existing(platform);
             platform.body.setImmovable(true);
             platform.body.setVelocityX(Phaser.Math.Between(this.game.gameOptions.platformSpeedRange[0], this.game.gameOptions.platformSpeedRange[1]) * -1);
-            platform.setDepth(2);
+            platform.setDepth(3);
             this.platformGroup.add(platform);
         }
         this.nextPlatformDistance = Phaser.Math.Between(this.game.gameOptions.spawnRange[0], this.game.gameOptions.spawnRange[1]);
@@ -401,6 +427,7 @@ class GameScene extends Phaser.Scene {
                     spike.alpha = 1;
                     spike.active = true;
                     spike.visible = true;
+                    spike.setDepth(2);
                     spike.setSize(40, 23, true);
                     this.spikePool.remove(spike);
                 }
@@ -410,10 +437,32 @@ class GameScene extends Phaser.Scene {
                     spike.setVelocityX(platform.body.velocity.x);
                     spike.setSize(40, 23, true)
                     //spike.anims.play("burn");
-                    spike.setDepth(1);
+                    spike.setDepth(2);
                     this.spikeGroup.add(spike);
                 }
             }
+
+            // is there a flower over the platform?
+            if(Phaser.Math.Between(1, 100) <= this.game.gameOptions.flowerPercent){
+                if(this.flowerPool.getLength()){
+                    let flower = this.flowerPool.getFirst();
+                    flower.x = posX - platformWidth / 2 + Phaser.Math.Between(25, platformWidth - 16);
+                    flower.y = posY - 65;
+                    flower.alpha = 1;
+                    flower.active = true;
+                    flower.visible = true;
+                    flower.setDepth(1);
+                    this.flowerPool.remove(flower);
+                }
+                else{
+                    let flower = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(25, platformWidth - 16), posY - 65, "flower").setScale(1);
+                    flower.setImmovable(true);
+                    flower.setVelocityX(platform.body.velocity.x);
+                    flower.setDepth(1);
+                    this.flowerGroup.add(flower);
+                }
+            }
+
         }
     }
 

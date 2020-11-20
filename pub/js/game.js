@@ -30,6 +30,9 @@ window.onload = function() {
     // tree speed, in pixels per second
     treeSpeed: 60,
 
+    // % of probability a tree appears  - NOT CURRENTLY USED
+    treePercent: 90,
+
     // spawn range, how far should be the rightmost platform from the right edge
     // before next platform spawns, in pixels
     spawnRange: [80, 300],
@@ -63,6 +66,9 @@ window.onload = function() {
 
     // % of probability spikes appear on the platform
     spikePercent: 30,
+
+    // % of probability a flower appears on the platform
+    flowerPercent: 30,
 
     // turn bg music on/off
     musicPlaying: false
