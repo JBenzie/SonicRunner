@@ -44,6 +44,30 @@ class GameScene extends Phaser.Scene {
                     frameHeight: 45
                 });
                 break;
+
+            case 'werehog':
+                // load sonic the werehog spritesheet
+                this.load.spritesheet("werehog", "pub/assets/images/werehog.png", {
+                    frameWidth: 51,
+                    frameHeight: 51
+                });
+                break;
+
+            case 'knuckles':
+                // load knuckles spritesheet
+                this.load.spritesheet("knuckles", "pub/assets/images/knuckles.png", {
+                    frameWidth: 36,
+                    frameHeight: 45
+                });
+                break;
+
+            case 'shadow':
+                // load shadow spritesheet
+                this.load.spritesheet("shadow", "pub/assets/images/shadow.png", {
+                    frameWidth: 56,
+                    frameHeight: 45
+                });
+                break;
         
             default:
                 // load sonic spritesheet
@@ -69,7 +93,7 @@ class GameScene extends Phaser.Scene {
 
         switch (this.character) {
             case 'sonic':
-                // setting player animation
+                // setting sonic animation
                 this.anims.create({
                     key: "run",
                     frames: this.anims.generateFrameNumbers("sonic", {
@@ -100,7 +124,7 @@ class GameScene extends Phaser.Scene {
                 break;
 
             case 'tails':
-                // setting player animation
+                // setting tails animation
                 this.anims.create({
                     key: "run",
                     frames: this.anims.generateFrameNumbers("tails", {
@@ -126,6 +150,99 @@ class GameScene extends Phaser.Scene {
                     frames: this.anims.generateFrameNumbers("tails", { 
                         start: 10, 
                         end: 10 }),
+                    repeat: 0
+                });
+                break;
+
+            case 'werehog':
+                // setting sonic the werehog animation
+                this.anims.create({
+                    key: "run",
+                    frames: this.anims.generateFrameNumbers("werehog", {
+                        start: 0,
+                        end: 4
+                    }),
+                    frameRate: 15,
+                    repeat: -1
+                });
+
+                this.anims.create({
+                    key: "jump",
+                    frameRate: 20,
+                    frames: this.anims.generateFrameNumbers("werehog", { 
+                        start: 5, 
+                        end: 15 }),
+                    repeat: 0
+                });
+
+                this.anims.create({
+                    key: "die",
+                    frameRate: 10,
+                    frames: this.anims.generateFrameNumbers("werehog", { 
+                        start: 16, 
+                        end: 16 }),
+                    repeat: 0
+                });
+                break;
+
+            case 'knuckles':
+                // setting knuckles animation
+                this.anims.create({
+                    key: "run",
+                    frames: this.anims.generateFrameNumbers("knuckles", {
+                        start: 0,
+                        end: 3
+                    }),
+                    frameRate: 18,
+                    repeat: -1
+                });
+
+                this.anims.create({
+                    key: "jump",
+                    frameRate: 13,
+                    frames: this.anims.generateFrameNumbers("knuckles", { 
+                        start: 4, 
+                        end: 7 }),
+                    repeat: 2
+                });
+
+                this.anims.create({
+                    key: "die",
+                    frameRate: 10,
+                    frames: this.anims.generateFrameNumbers("knuckles", { 
+                        start: 8, 
+                        end: 8 }),
+                    repeat: 0
+                });
+                break;
+
+            case 'shadow':
+                // setting shadow animation
+                this.anims.create({
+                    key: "run",
+                    frames: this.anims.generateFrameNumbers("shadow", {
+                        start: 0,
+                        end: 3
+                    }),
+                    frameRate: 15,
+                    repeat: -1
+                });
+
+                this.anims.create({
+                    key: "jump",
+                    frameRate: 13,
+                    frames: this.anims.generateFrameNumbers("shadow", { 
+                        start: 4, 
+                        end: 7 }),
+                    repeat: 2
+                });
+
+                this.anims.create({
+                    key: "die",
+                    frameRate: 10,
+                    frames: this.anims.generateFrameNumbers("shadow", { 
+                        start: 8, 
+                        end: 8 }),
                     repeat: 0
                 });
                 break;

@@ -48,6 +48,9 @@ class TitleScene extends Phaser.Scene {
 		this.load.image('start', 'pub/assets/images/start.png');
 		this.load.image('btnSonic', 'pub/assets/images/btnSonic.png');
 		this.load.image('btnTails', 'pub/assets/images/btnTails.png');
+		this.load.image('btnWerehog', 'pub/assets/images/btnWerehog.png');
+		this.load.image('btnKnuckles', 'pub/assets/images/btnKnuckles.png');
+		this.load.image('btnShadow', 'pub/assets/images/btnShadow.png');
 		//this.load.bitmapFont('soupofjustice', 'pub/assets/fonts/soupofjustice.png', 'pub/assets/fonts/soupofjustice.fnt');
 
 		this.load.audio('title', 'pub/assets/audio/title.mp3');
@@ -89,7 +92,7 @@ class TitleScene extends Phaser.Scene {
 		
 		var text = this.add.text(rect.width / 2, height / 2 + 75, 'SELECT A RUNNER', { fontFamily: 'Orbitron', fontSize: 18, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 		
-		var btnSonic = this.physics.add.image(rect.width / 2, this.game.config.height / 2 + 150, 'btnSonic').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnSonic = this.physics.add.image(rect.x + 150, this.game.config.height / 2 + 150, 'btnSonic').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnSonic.on('pointerover', function(pointer) {
 			btnSonic.setScale(.6);
@@ -106,7 +109,7 @@ class TitleScene extends Phaser.Scene {
             this.scene.start('gameScene');
 		});
 		
-		var btnTails = this.physics.add.image(rect.width / 2 + 200, this.game.config.height / 2 + 150, 'btnTails').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnTails = this.physics.add.image(rect.x + 350, this.game.config.height / 2 + 150, 'btnTails').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnTails.on('pointerover', function(pointer) {
 			btnTails.setScale(.6);
@@ -120,6 +123,57 @@ class TitleScene extends Phaser.Scene {
 			titleMusic.stop();
 			this.music.play();
 			this.game.globalVars.character = 'tails';
+            this.scene.start('gameScene');
+		});
+		
+		var btnWerehog = this.physics.add.image(rect.x + 550, this.game.config.height / 2 + 150, 'btnWerehog').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+
+		btnWerehog.on('pointerover', function(pointer) {
+			btnWerehog.setScale(.6);
+		});
+		btnWerehog.on('pointerout', function(pointer) {
+			btnWerehog.setScale(.5);
+		});
+
+		btnWerehog.on('pointerdown', () => {
+			this.sound.play('start');
+			titleMusic.stop();
+			this.music.play();
+			this.game.globalVars.character = 'werehog';
+            this.scene.start('gameScene');
+		});
+		
+		var btnKnuckles = this.physics.add.image(rect.x + 750, this.game.config.height / 2 + 150, 'btnKnuckles').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+
+		btnKnuckles.on('pointerover', function(pointer) {
+			btnKnuckles.setScale(.6);
+		});
+		btnKnuckles.on('pointerout', function(pointer) {
+			btnKnuckles.setScale(.5);
+		});
+
+		btnKnuckles.on('pointerdown', () => {
+			this.sound.play('start');
+			titleMusic.stop();
+			this.music.play();
+			this.game.globalVars.character = 'knuckles';
+            this.scene.start('gameScene');
+		});
+		
+		var btnShadow = this.physics.add.image(rect.x + 950, this.game.config.height / 2 + 150, 'btnShadow').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+
+		btnShadow.on('pointerover', function(pointer) {
+			btnShadow.setScale(.6);
+		});
+		btnShadow.on('pointerout', function(pointer) {
+			btnShadow.setScale(.5);
+		});
+
+		btnShadow.on('pointerdown', () => {
+			this.sound.play('start');
+			titleMusic.stop();
+			this.music.play();
+			this.game.globalVars.character = 'shadow';
             this.scene.start('gameScene');
         });
 
