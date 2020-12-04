@@ -7,6 +7,7 @@ class GameScene extends Phaser.Scene {
         // initialize game variables
         this.gameOver = false;
         this.score = 0;
+        this.highscore;
         this.character = this.game.globalVars.character;
         console.log(`Character: ${this.character}`);
     }
@@ -17,6 +18,8 @@ class GameScene extends Phaser.Scene {
         this.load.audio("jump", "pub/assets/audio/jump.wav");
         this.load.audio("die", "pub/assets/audio/die.wav");
         this.load.audio("spikes", "pub/assets/audio/spikes.wav");
+        this.load.audio("highscore1", "pub/assets/audio/highscore1.wav");
+        this.load.audio("highscore2", "pub/assets/audio/highscore2.wav");
         this.load.image("platform", "pub/assets/images/platform/platform.png");
         this.load.image("frame", "pub/assets/images/sonic_frame.png");
         this.load.image("bg", "pub/assets/images/greenHill.png");
@@ -24,6 +27,7 @@ class GameScene extends Phaser.Scene {
         this.load.image("tree", "pub/assets/images/palm.png");
         this.load.image("totem", "pub/assets/images/totem.png");
         this.load.image("flower", "pub/assets/images/sunflower.png");
+        this.load.image("home", "pub/assets/images/home.png");
 
         // load Google WebFont script
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
@@ -328,7 +332,28 @@ class GameScene extends Phaser.Scene {
         this.socket.on('leaderboardUpdate', function(data){
             console.log(`Received leaderboard update: ${data.highscore}.`);
             self.highscoreText.setText(`HIGHSCORE: ${data.highscore}`);
+            self.highscore = data.highscore;
         });
+        var homeBtn = this.physics.add.image(frameRect.x + frameRect.width - 260, ringRect.y + 50, 'home').setScale(0.07).setDepth(6).setInteractive({ cursor: 'pointer' });
+        homeBtn.on('pointerover', function(pointer) {
+			homeBtn.setScale(.09);
+		});
+		homeBtn.on('pointerout', function(pointer) {
+			homeBtn.setScale(.07);
+		});
+
+		/* homeBtn.on('pointerdown', () => {
+            this.socket.emit('scoreUpdate', {score: this.score });
+            console.log(`Sending score update: ${this.score}.`);
+            if (this.score > this.highscore)
+            {
+                this.sound.play("highscore2");
+            }
+            this.socket.disconnect();
+            this.scene.stop('gameScene');
+            this.scene.remove('gameScene');
+            this.scene.start('titleScene');
+		}); */
 
         // group with all active trees.
         this.treeGroup = this.add.group();
@@ -442,6 +467,8 @@ class GameScene extends Phaser.Scene {
                 ringPlaying = true;
                 this.score ++;
                 this.scoreText.setText(this.score);
+                this.socket.emit('scoreUpdate', {score: this.score });
+                console.log(`Sending score update: ${this.score}.`);
             }
             ring.anims.play("fade");
             this.tweens.add({
@@ -479,11 +506,16 @@ class GameScene extends Phaser.Scene {
     }
     update() {
         //constantly running loop
+
         // game over
         if(this.player.y > this.game.config.height){
             this.sound.play('die');
             this.socket.emit('scoreUpdate', {score: this.score });
             console.log(`Sending score update: ${this.score}.`);
+            if (this.score > this.highscore)
+            {
+                this.sound.play("highscore2");
+            }
             this.socket.disconnect();
             this.scene.restart();
         }

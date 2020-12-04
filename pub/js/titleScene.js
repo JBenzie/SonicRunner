@@ -56,6 +56,11 @@ class TitleScene extends Phaser.Scene {
 		this.load.audio('title', 'pub/assets/audio/title.mp3');
 		this.load.audio('start', 'pub/assets/audio/start.wav');
 		this.load.audio("theme", "pub/assets/audio/greenHill.mp3");
+		this.load.audio('sonicIntro', 'pub/assets/audio/sonic_intro.wav');
+		this.load.audio('tailsIntro', 'pub/assets/audio/tails_intro.wav');
+		this.load.audio('werehogIntro', 'pub/assets/audio/werehog_intro.wav');
+		this.load.audio('knucklesIntro', 'pub/assets/audio/knuckles_intro.wav');
+		this.load.audio('shadowIntro', 'pub/assets/audio/shadow_intro.wav');
 		
 		// load Google WebFont script
 		this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
@@ -105,6 +110,7 @@ class TitleScene extends Phaser.Scene {
 			this.sound.play('start');
 			titleMusic.stop();
 			this.music.play();
+			this.sound.play('sonicIntro');
 			this.game.globalVars.character = 'sonic';
             this.scene.start('gameScene');
 		});
@@ -122,6 +128,7 @@ class TitleScene extends Phaser.Scene {
 			this.sound.play('start');
 			titleMusic.stop();
 			this.music.play();
+			this.sound.play('tailsIntro');
 			this.game.globalVars.character = 'tails';
             this.scene.start('gameScene');
 		});
@@ -139,6 +146,7 @@ class TitleScene extends Phaser.Scene {
 			this.sound.play('start');
 			titleMusic.stop();
 			this.music.play();
+			this.sound.play('werehogIntro');
 			this.game.globalVars.character = 'werehog';
             this.scene.start('gameScene');
 		});
@@ -156,6 +164,7 @@ class TitleScene extends Phaser.Scene {
 			this.sound.play('start');
 			titleMusic.stop();
 			this.music.play();
+			this.sound.play('knucklesIntro');
 			this.game.globalVars.character = 'knuckles';
             this.scene.start('gameScene');
 		});
@@ -173,6 +182,7 @@ class TitleScene extends Phaser.Scene {
 			this.sound.play('start');
 			titleMusic.stop();
 			this.music.play();
+			this.sound.play('shadowIntro');
 			this.game.globalVars.character = 'shadow';
             this.scene.start('gameScene');
         });
