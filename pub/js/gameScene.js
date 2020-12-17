@@ -516,7 +516,7 @@ class GameScene extends Phaser.Scene {
             console.log(`Game over. Sending score update: ${this.playerName} - ${this.score}.`);
             if (this.score > this.highscore)
             {
-                this.sound.play("highscore2");
+                this.sound.play("highscore1");
             }
             this.socket.disconnect();
             this.scene.restart();
