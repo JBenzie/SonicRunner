@@ -38,7 +38,6 @@ class TitleScene extends Phaser.Scene {
 		});
 	  
 		this.load.on('complete', function () {
-		  console.log('complete');
 		  loadingText.destroy();
 		  percentText.destroy();
 		});
@@ -51,7 +50,8 @@ class TitleScene extends Phaser.Scene {
 		this.load.image('btnWerehog', 'pub/assets/images/btnWerehog.png');
 		this.load.image('btnKnuckles', 'pub/assets/images/btnKnuckles.png');
 		this.load.image('btnShadow', 'pub/assets/images/btnShadow.png');
-		//this.load.bitmapFont('soupofjustice', 'pub/assets/fonts/soupofjustice.png', 'pub/assets/fonts/soupofjustice.fnt');
+
+		this.load.html('form', 'pub/form.html');
 
 		this.load.audio('title', 'pub/assets/audio/title.mp3');
 		this.load.audio('start', 'pub/assets/audio/start.wav');
@@ -69,7 +69,8 @@ class TitleScene extends Phaser.Scene {
 
 	create() {
 		const width = this.game.config.width;
-        const height = this.scale.game.config.height;
+		const height = this.scale.game.config.height;
+		const btnYpos = this.game.config.height / 2 + 200;
 
 		var self = this;
 		this.socket = io();
@@ -90,14 +91,22 @@ class TitleScene extends Phaser.Scene {
 		this.frame.setDepth(5);
 		var rect = this.titleBg.getBounds();
 		this.socket.on('leaderboardUpdate', function(data) {
-			console.log(`Received highscore: ${data.highscore}.`);
-			self.highscore = data.highscore;
-			self.highscoreText = self.add.text(width / 2 - 110, height / 2 + 250, `HIGHSCORE: ${self.highscore}`, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
+			console.log(`Received highscore: ${data.playerName} - ${data._id}.`);
+			self.highscore = data._id;
+			self.highscoreText = self.add.text(width / 2 - 210, height / 2 + 250, `HIGHSCORE: ${data.playerName} - ${data._id}`, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 		});
+
+		var form = this.add.dom(width / 2 + 165, height / 2 + 215).createFromCache('form');
+		form.setDepth(10);
+		form.setPerspective(800);
+		if (this.game.globalVars.playerName != 'null') {
+			let name = form.getChildByName("name");
+			name.value = this.game.globalVars.playerName;
+		}
+
+		var text = this.add.text(rect.width / 2, height / 2 + 135, 'SELECT A RUNNER', { fontFamily: 'Orbitron', fontSize: 18, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 		
-		var text = this.add.text(rect.width / 2, height / 2 + 75, 'SELECT A RUNNER', { fontFamily: 'Orbitron', fontSize: 18, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
-		
-		var btnSonic = this.physics.add.image(rect.x + 150, this.game.config.height / 2 + 150, 'btnSonic').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnSonic = this.physics.add.image(rect.x + 150, btnYpos, 'btnSonic').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnSonic.on('pointerover', function(pointer) {
 			btnSonic.setScale(.6);
@@ -112,10 +121,15 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('sonicIntro');
 			this.game.globalVars.character = 'sonic';
+			let name = form.getChildByName("name");
+			if(name.value != "") {
+				this.game.globalVars.playerName = name.value;
+				console.log(`username: ${name.value}`);
+			}
             this.scene.start('gameScene');
 		});
 		
-		var btnTails = this.physics.add.image(rect.x + 350, this.game.config.height / 2 + 150, 'btnTails').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnTails = this.physics.add.image(rect.x + 350, btnYpos, 'btnTails').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnTails.on('pointerover', function(pointer) {
 			btnTails.setScale(.6);
@@ -130,10 +144,15 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('tailsIntro');
 			this.game.globalVars.character = 'tails';
+			let name = form.getChildByName("name");
+			if(name.value != "") {
+				this.game.globalVars.playerName = name.value;
+				console.log(`username: ${name.value}`);
+			}
             this.scene.start('gameScene');
 		});
 		
-		var btnWerehog = this.physics.add.image(rect.x + 550, this.game.config.height / 2 + 150, 'btnWerehog').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnWerehog = this.physics.add.image(rect.x + 550, btnYpos, 'btnWerehog').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnWerehog.on('pointerover', function(pointer) {
 			btnWerehog.setScale(.6);
@@ -148,10 +167,15 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('werehogIntro');
 			this.game.globalVars.character = 'werehog';
+			let name = form.getChildByName("name");
+			if(name.value != "") {
+				this.game.globalVars.playerName = name.value;
+				console.log(`username: ${name.value}`);
+			}
             this.scene.start('gameScene');
 		});
 		
-		var btnKnuckles = this.physics.add.image(rect.x + 750, this.game.config.height / 2 + 150, 'btnKnuckles').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnKnuckles = this.physics.add.image(rect.x + 750, btnYpos, 'btnKnuckles').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnKnuckles.on('pointerover', function(pointer) {
 			btnKnuckles.setScale(.6);
@@ -166,10 +190,15 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('knucklesIntro');
 			this.game.globalVars.character = 'knuckles';
+			let name = form.getChildByName("name");
+			if(name.value != "") {
+				this.game.globalVars.playerName = name.value;
+				console.log(`username: ${name.value}`);
+			}
             this.scene.start('gameScene');
 		});
 		
-		var btnShadow = this.physics.add.image(rect.x + 950, this.game.config.height / 2 + 150, 'btnShadow').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnShadow = this.physics.add.image(rect.x + 950, btnYpos, 'btnShadow').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnShadow.on('pointerover', function(pointer) {
 			btnShadow.setScale(.6);
@@ -184,6 +213,11 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('shadowIntro');
 			this.game.globalVars.character = 'shadow';
+			let name = form.getChildByName("name");
+			if(name.value != "") {
+				this.game.globalVars.playerName = name.value;
+				console.log(`username: ${name.value}`);
+			}
             this.scene.start('gameScene');
         });
 
@@ -195,24 +229,8 @@ class TitleScene extends Phaser.Scene {
 		titleMusic.play();
 
 		this.music = this.sound.add("theme", { volume: 0.5 });
-        this.music.loop = true;
+		this.music.loop = true;
 		
-/* 		var startBtn = this.physics.add.image(width / 2, height / 2 + 150 , 'start').setScale(.75).setInteractive({ cursor: 'pointer' });
-
-		startBtn.on('pointerover', function(pointer) {
-			startBtn.setScale(.85);
-		});
-		startBtn.on('pointerout', function(pointer) {
-			startBtn.setScale(.75);
-		});
-
-		startBtn.on('pointerdown', () => {
-			//this.sound.play('click');
-			this.sound.play('start');
-			titleMusic.stop();
-			this.music.play();
-            this.scene.start('gameScene');
-        }); */
 	}
 
 }

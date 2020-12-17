@@ -8,6 +8,7 @@ class GameScene extends Phaser.Scene {
         this.gameOver = false;
         this.score = 0;
         this.highscore;
+        this.playerName = this.game.globalVars.playerName;
         this.character = this.game.globalVars.character;
         console.log(`Character: ${this.character}`);
     }
@@ -328,11 +329,12 @@ class GameScene extends Phaser.Scene {
         var ringRect = this.ring.getBounds();
         this.scoreText = this.add.text(frameRect.x + 250, ringRect.y, this.score, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
         this.highscoreText = this.add.text(frameRect.x + frameRect.width - 400, ringRect.y, 'HIGHSCORE: 0', { fontFamily: 'Orbitron', fontSize: 18, color: '#ffffff', align: 'right' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
+        this.socket.emit('setPlayerName', { playerName: this.playerName });
         this.socket.emit('getLeaderboard');
         this.socket.on('leaderboardUpdate', function(data){
-            console.log(`Received leaderboard update: ${data.highscore}.`);
-            self.highscoreText.setText(`HIGHSCORE: ${data.highscore}`);
-            self.highscore = data.highscore;
+            console.log(`Received leaderboard update: ${data.playerName} - ${data._id}.`);
+            self.highscoreText.setText(`HIGHSCORE: ${data._id}`);
+            self.highscore = data._id;
         });
         var homeBtn = this.physics.add.image(frameRect.x + frameRect.width - 260, ringRect.y + 50, 'home').setScale(0.07).setDepth(6).setInteractive({ cursor: 'pointer' });
         homeBtn.on('pointerover', function(pointer) {
@@ -467,8 +469,8 @@ class GameScene extends Phaser.Scene {
                 ringPlaying = true;
                 this.score ++;
                 this.scoreText.setText(this.score);
-                this.socket.emit('scoreUpdate', {score: this.score });
-                console.log(`Sending score update: ${this.score}.`);
+                // this.socket.emit('scoreUpdate', { playerName: this.playerName, score: this.score });
+                // console.log(`Sending score update: ${this.playerName} - ${this.score}.`);
             }
             ring.anims.play("fade");
             this.tweens.add({
@@ -510,8 +512,8 @@ class GameScene extends Phaser.Scene {
         // game over
         if(this.player.y > this.game.config.height){
             this.sound.play('die');
-            this.socket.emit('scoreUpdate', {score: this.score });
-            console.log(`Sending score update: ${this.score}.`);
+            this.socket.emit('gameOver', { playerName: this.playerName, score: this.score, id: this.socket.id });
+            console.log(`Game over. Sending score update: ${this.playerName} - ${this.score}.`);
             if (this.score > this.highscore)
             {
                 this.sound.play("highscore2");

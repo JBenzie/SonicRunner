@@ -13,6 +13,10 @@ window.onload = function() {
     width: 1334,
     height: 750,
     backgroundColor: 0x000000,
+    parent: "phaser-game",
+    dom: { 
+      createContainer: true 
+    },
     physics:{
       default: "arcade",
       arcade: {
@@ -78,7 +82,8 @@ window.onload = function() {
   game.globalVars = {
     // highscore
     highScore: 0,
-
+    // username
+    playerName: null,
     // player avatar
     character: 'sonic'
   }
