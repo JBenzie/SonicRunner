@@ -125,6 +125,8 @@ class TitleScene extends Phaser.Scene {
 			if(name.value != "") {
 				this.game.globalVars.playerName = name.value;
 				console.log(`username: ${name.value}`);
+			} else {
+				this.game.globalVars.playerName = 'Robotnik';
 			}
             this.scene.start('gameScene');
 		});
@@ -148,6 +150,8 @@ class TitleScene extends Phaser.Scene {
 			if(name.value != "") {
 				this.game.globalVars.playerName = name.value;
 				console.log(`username: ${name.value}`);
+			} else {
+				this.game.globalVars.playerName = 'Robotnik';
 			}
             this.scene.start('gameScene');
 		});
@@ -171,6 +175,8 @@ class TitleScene extends Phaser.Scene {
 			if(name.value != "") {
 				this.game.globalVars.playerName = name.value;
 				console.log(`username: ${name.value}`);
+			} else {
+				this.game.globalVars.playerName = 'Robotnik';
 			}
             this.scene.start('gameScene');
 		});
@@ -194,6 +200,8 @@ class TitleScene extends Phaser.Scene {
 			if(name.value != "") {
 				this.game.globalVars.playerName = name.value;
 				console.log(`username: ${name.value}`);
+			} else {
+				this.game.globalVars.playerName = 'Robotnik';
 			}
             this.scene.start('gameScene');
 		});
@@ -217,6 +225,8 @@ class TitleScene extends Phaser.Scene {
 			if(name.value != "") {
 				this.game.globalVars.playerName = name.value;
 				console.log(`username: ${name.value}`);
+			} else {
+				this.game.globalVars.playerName = 'Robotnik';
 			}
             this.scene.start('gameScene');
         });
