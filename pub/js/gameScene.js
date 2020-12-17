@@ -18,6 +18,9 @@ class GameScene extends Phaser.Scene {
         } else if (this.playerName == 'eggman' || this.playerName == 'Eggman' || this.playerName == 'robotnik' || this.playerName == 'Robotnik') {
             this.game.gameOptions.spikePercent = 100;
             this.game.gameOptions.ringPercent = 0;
+        } else {
+            this.game.gameOptions.spikePercent = 30;
+            this.game.gameOptions.ringPercent = 65;
         }
     }
 
