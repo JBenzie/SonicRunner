@@ -344,18 +344,15 @@ class GameScene extends Phaser.Scene {
 			homeBtn.setScale(.07);
 		});
 
-		/* homeBtn.on('pointerdown', () => {
-            this.socket.emit('scoreUpdate', {score: this.score });
-            console.log(`Sending score update: ${this.score}.`);
+		homeBtn.on('pointerdown', () => {
+            this.socket.emit('gameOver', { playerName: this.playerName, score: this.score, id: this.socket.id });
+            console.log(`Home button pressed - sending game data: ${this.playerName}, ${this.score}.`);
             if (this.score > this.highscore)
             {
-                this.sound.play("highscore2");
+                this.sound.play("highscore1");
             }
-            this.socket.disconnect();
-            this.scene.stop('gameScene');
-            this.scene.remove('gameScene');
-            this.scene.start('titleScene');
-		}); */
+            location.reload();
+		});
 
         // group with all active trees.
         this.treeGroup = this.add.group();

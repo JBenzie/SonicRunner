@@ -28,8 +28,6 @@ var _user = {
   score: null
 };
 
-// ************ LEADERBOARD INDEX QUERY NOT RETURNING HIGHEST SCORE -- NEEDS FIXED ***************
-
 leaderboard.find({
   selector: {_id: {$gt: 0}},
   fields: ['_id', 'playerName'],
@@ -45,6 +43,8 @@ leaderboard.find({
   console.log(err);
 });
 
+
+// UNCOMMENT TO DESTROY BOTH DATABASES
 /* leaderboard.destroy().then(function (response) {
   console.log('leaderboard db destroyed successfully.');
 }).catch(function (err) {
