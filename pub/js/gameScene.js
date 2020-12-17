@@ -11,6 +11,14 @@ class GameScene extends Phaser.Scene {
         this.playerName = this.game.globalVars.playerName;
         this.character = this.game.globalVars.character;
         console.log(`Character: ${this.character}`);
+
+        if(this.playerName == 'scarlett' || this.playerName == 'Scarlett' || this.playerName == 'wyatt' || this.playerName == 'Wyatt'){
+            this.game.gameOptions.spikePercent = 0;
+            this.game.gameOptions.ringPercent = 100;
+        } else if (this.playerName == 'eggman' || this.playerName == 'Eggman' || this.playerName == 'robotnik' || this.playerName == 'Robotnik') {
+            this.game.gameOptions.spikePercent = 100;
+            this.game.gameOptions.ringPercent = 0;
+        }
     }
 
     preload() {
