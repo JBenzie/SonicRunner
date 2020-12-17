@@ -143,7 +143,7 @@ io.on('connection', function (socket) {
     leaderboard.find({
       selector: {_id: {$gt: 0}},
       fields: ['_id', 'playerName'],
-      sort: [{_id: 'desc'}],
+      sort: [{'_id': 'desc'}],
       limit: 1
     }).then(function (result) {
       console.log('leaderboard results: ', result);
