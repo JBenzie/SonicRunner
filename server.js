@@ -43,7 +43,6 @@ leaderboard.find({
   console.log(err);
 });
 
-
 // UNCOMMENT TO DESTROY BOTH DATABASES
 /* leaderboard.destroy().then(function (response) {
   console.log('leaderboard db destroyed successfully.');
