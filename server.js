@@ -19,7 +19,8 @@ app.get('/', function (req, res) {
 // game variables
 var _leaderboard = {
   _id: null,
-  playerName: null
+  playerName: null,
+  score: null
 };
 
 var _user = {
@@ -30,7 +31,7 @@ var _user = {
 
 leaderboard.createIndex({
   index: {
-    fields: ['_id'],
+    fields: ['score'],
     name: 'highscore',
     ddoc: 'highscoreddoc'
   }
@@ -41,15 +42,15 @@ leaderboard.createIndex({
 });
 
 leaderboard.find({
-  selector: {_id: {$ne: '0'}},
-  fields: ['_id', 'playerName'],
-  sort: [{_id: 'desc'}],
+  selector: {score: {$gt: 0}},
+  fields: ['playerName', 'score'],
+  sort: [{score: 'desc'}],
   limit: 1
 }).then(function (result) {
   console.log('leaderboard results: ', result);
   _leaderboard = {
-    _id: result.docs[0]._id,
-    playerName: result.docs[0].playerName
+    playerName: result.docs[0].playerName,
+    score: result.docs[0].score
   }
 }).catch(function (err) {
   console.log(err);
@@ -99,26 +100,27 @@ io.on('connection', function (socket) {
   socket.on('gameOver', function(scoreData) {
     console.log(`GAME OVER -- scoreData: ${scoreData.playerName} - ${scoreData.score}.`);
 
-      leaderboard.find({
-        selector: {_id: {$ne: '0'}},
-        fields: ['_id', 'playerName'],
-        sort: [{_id: 'desc'}],
-        limit: 1
-      }).then(function (result) {
-        console.log('leaderboard results: ', result);
-        _leaderboard = {
-          _id: result.docs[0]._id,
-          playerName: result.docs[0].playerName
-        }
-      }).catch(function (err) {
-        console.log(err);
-      });
+    leaderboard.find({
+      selector: {score: {$gt: 0}},
+      fields: ['playerName', 'score'],
+      sort: [{score: 'desc'}],
+      limit: 1
+    }).then(function (result) {
+      console.log('leaderboard results: ', result);
+      _leaderboard = {
+        playerName: result.docs[0].playerName,
+        score: result.docs[0].score
+      }
+    }).catch(function (err) {
+      console.log(err);
+    });
 
-    if(scoreData.score > 0 || scoreData.score > parseInt(_leaderboard._id)){
+    if(scoreData.score > 0 || scoreData.score > _leaderboard.score){
       
       leaderboard.put({
         _id: scoreData.score.toString(),
-        playerName: scoreData.playerName
+        playerName: scoreData.playerName,
+        score: scoreData.score
       }).then(function (response) {
         console.log('Leaderboard updated successfully!', response);
       }).catch(function (err) {
@@ -140,21 +142,21 @@ io.on('connection', function (socket) {
   socket.on('getLeaderboard', function() {
   
     leaderboard.find({
-      selector: {_id: {$gt: 0}},
-      fields: ['_id', 'playerName'],
-      sort: [{'_id': 'desc'}],
+      selector: {score: {$gt: 0}},
+      fields: ['playerName', 'score'],
+      sort: [{score: 'desc'}],
       limit: 1
     }).then(function (result) {
       console.log('leaderboard results: ', result);
       _leaderboard = {
-        _id: result.docs[0]._id,
-        playerName: result.docs[0].playerName
+        playerName: result.docs[0].playerName,
+        score: result.docs[0].score
       }
     }).catch(function (err) {
       console.log(err);
     });
     console.log(_leaderboard);
-    console.log(`Sending current leaderboard: ${_leaderboard.playerName} - ${_leaderboard._id}.`);
+    console.log(`Sending current leaderboard: ${_leaderboard.playerName} - ${_leaderboard.score}.`);
     socket.emit('leaderboardUpdate', _leaderboard);
   });
 

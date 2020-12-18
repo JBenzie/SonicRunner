@@ -12,10 +12,11 @@ class GameScene extends Phaser.Scene {
         this.character = this.game.globalVars.character;
         console.log(`Character: ${this.character}`);
 
-        if(this.playerName == 'scarlett' || this.playerName == 'Scarlett' || this.playerName == 'wyatt' || this.playerName == 'Wyatt'){
+        if(this.playerName.toLowerCase() == 'scarlett' || this.playerName.toLowerCase() == 'wyatt'){
             this.game.gameOptions.spikePercent = 0;
             this.game.gameOptions.ringPercent = 100;
-        } else if (this.playerName == 'eggman' || this.playerName == 'Eggman' || this.playerName == 'robotnik' || this.playerName == 'Robotnik') {
+        } else if (this.playerName.toLowerCase() == 'eggman' || this.playerName.toLowerCase() == 'robotnik' ||
+                   this.playerName.toLowerCase() == 'dr. eggman' || this.playerName.toLowerCase() == 'dr. robotnik' || this.playerName.toLowerCase() == 'ivo') {
             this.game.gameOptions.spikePercent = 100;
             this.game.gameOptions.ringPercent = 0;
         } else {
@@ -343,9 +344,9 @@ class GameScene extends Phaser.Scene {
         this.socket.emit('setPlayerName', { playerName: this.playerName });
         this.socket.emit('getLeaderboard');
         this.socket.on('leaderboardUpdate', function(data){
-            console.log(`Received leaderboard update: ${data.playerName} - ${data._id}.`);
-            self.highscoreText.setText(`HIGHSCORE: ${data._id}`);
-            self.highscore = data._id;
+            console.log(`Received leaderboard update: ${data.playerName} - ${data.score}.`);
+            self.highscoreText.setText(`HIGHSCORE: ${data.score}`);
+            self.highscore = data.score;
         });
         var homeBtn = this.physics.add.image(frameRect.x + frameRect.width - 260, ringRect.y + 50, 'home').setScale(0.07).setDepth(6).setInteractive({ cursor: 'pointer' });
         homeBtn.on('pointerover', function(pointer) {

@@ -91,9 +91,9 @@ class TitleScene extends Phaser.Scene {
 		this.frame.setDepth(5);
 		var rect = this.titleBg.getBounds();
 		this.socket.on('leaderboardUpdate', function(data) {
-			console.log(`Received highscore: ${data.playerName} - ${data._id}.`);
-			self.highscore = data._id;
-			self.highscoreText = self.add.text(width / 2 - 210, height / 2 + 250, `HIGHSCORE: ${data.playerName} - ${data._id}`, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
+			console.log(`Received highscore: ${data.playerName} - ${data.score}.`);
+			self.highscore = data.score;
+			self.highscoreText = self.add.text(width / 2 - 210, height / 2 + 250, `HIGHSCORE: ${data.playerName} - ${data.score}`, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 		});
 
 		var form = this.add.dom(width / 2 + 165, height / 2 + 215).createFromCache('form');
