@@ -28,8 +28,20 @@ var _user = {
   score: null
 };
 
+leaderboard.createIndex({
+  index: {
+    fields: ['_id'],
+    name: 'highscore',
+    ddoc: 'highscoreddoc'
+  }
+}).then(function (result) {
+  console.log('createIndex result: ', result);
+}).catch(function (err) {
+  console.log(err);
+});
+
 leaderboard.find({
-  selector: {_id: {$gt: 0}},
+  selector: {_id: {$ne: '0'}},
   fields: ['_id', 'playerName'],
   sort: [{_id: 'desc'}],
   limit: 1
@@ -87,20 +99,8 @@ io.on('connection', function (socket) {
   socket.on('gameOver', function(scoreData) {
     console.log(`GAME OVER -- scoreData: ${scoreData.playerName} - ${scoreData.score}.`);
 
-    leaderboard.createIndex({
-        index: {
-          fields: ['_id'],
-          name: 'highscore',
-          ddoc: 'highscoreddoc'
-        }
-      }).then(function (result) {
-        console.log('createIndex result: ', result);
-      }).catch(function (err) {
-        console.log(err);
-      });
-
       leaderboard.find({
-        selector: {_id: {$gt: 0}},
+        selector: {_id: {$ne: '0'}},
         fields: ['_id', 'playerName'],
         sort: [{_id: 'desc'}],
         limit: 1
