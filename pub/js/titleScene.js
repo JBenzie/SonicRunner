@@ -96,7 +96,7 @@ class TitleScene extends Phaser.Scene {
 			self.highscoreText = self.add.text(width / 2 - 210, height / 2 + 250, `HIGHSCORE: ${data.playerName} - ${data.score}`, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 		});
 
-		var form = this.add.dom(width / 2 + 165, height / 2 + 215).createFromCache('form');
+		var form = this.add.dom(660, 565).createFromCache('form');
 		form.setDepth(10);
 		form.setPerspective(800);
 		if (this.game.globalVars.playerName != 'null') {
