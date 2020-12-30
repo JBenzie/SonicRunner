@@ -45,11 +45,14 @@ class TitleScene extends Phaser.Scene {
 		this.load.image('frame', '/pub/assets/images/sonic_frame.png');
 		this.load.image("titleBg", "pub/assets/images/titleBg.png");
 		this.load.image('start', 'pub/assets/images/start.png');
-		this.load.image('btnSonic', 'pub/assets/images/btnSonic.png');
-		this.load.image('btnTails', 'pub/assets/images/btnTails.png');
-		this.load.image('btnWerehog', 'pub/assets/images/btnWerehog.png');
-		this.load.image('btnKnuckles', 'pub/assets/images/btnKnuckles.png');
-		this.load.image('btnShadow', 'pub/assets/images/btnShadow.png');
+		this.load.image('btnSonic', 'pub/assets/images/sonic_image.png');
+		this.load.image('btnTails', 'pub/assets/images/tails_image.png');
+		this.load.image('btnWerehog', 'pub/assets/images/werehog_image.png');
+		this.load.image('btnKnuckles', 'pub/assets/images/knuckles_image.png');
+		this.load.image('btnShadow', 'pub/assets/images/shadow_image.png');
+		this.load.image('btnAmy', 'pub/assets/images/amyrose_image.png');
+		this.load.image('btnSilver', 'pub/assets/images/silver_image.png');
+		this.load.image('btnSticks', 'pub/assets/images/sticks_image.png');
 
 		this.load.html('form', 'pub/form.html');
 
@@ -70,7 +73,7 @@ class TitleScene extends Phaser.Scene {
 	create() {
 		const width = this.game.config.width;
 		const height = this.scale.game.config.height;
-		const btnYpos = this.game.config.height / 2 + 200;
+		const btnYpos = this.game.config.height / 2 + 210;
 
 		var self = this;
 		this.socket = io();
@@ -93,7 +96,7 @@ class TitleScene extends Phaser.Scene {
 		this.socket.on('leaderboardUpdate', function(data) {
 			console.log(`Received highscore: ${data.playerName} - ${data.score}.`);
 			self.highscore = data.score;
-			self.highscoreText = self.add.text(width / 2 - 210, height / 2 + 250, `HIGHSCORE: ${data.playerName} - ${data.score}`, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
+			self.highscoreText = self.add.text(width / 2 - 210, height / 2 + 275, `HIGHSCORE: ${data.playerName} - ${data.score}`, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 		});
 
 		var form = this.add.dom(660, 565).createFromCache('form');
@@ -104,15 +107,15 @@ class TitleScene extends Phaser.Scene {
 			name.value = this.game.globalVars.playerName;
 		}
 
-		var text = this.add.text(rect.width / 2, height / 2 + 135, 'SELECT A RUNNER', { fontFamily: 'Orbitron', fontSize: 18, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
+		var text = this.add.text(rect.width / 2, height / 2 + 120, 'SELECT A RUNNER', { fontFamily: 'Orbitron', fontSize: 18, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 		
-		var btnSonic = this.physics.add.image(rect.x + 150, btnYpos, 'btnSonic').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnSonic = this.physics.add.image(rect.x + 100, btnYpos, 'btnSonic').setScale(.4).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnSonic.on('pointerover', function(pointer) {
 			btnSonic.setScale(.6);
 		});
 		btnSonic.on('pointerout', function(pointer) {
-			btnSonic.setScale(.5);
+			btnSonic.setScale(.4);
 		});
 
 		btnSonic.on('pointerdown', () => {
@@ -131,13 +134,13 @@ class TitleScene extends Phaser.Scene {
             this.scene.start('gameScene');
 		});
 		
-		var btnTails = this.physics.add.image(rect.x + 350, btnYpos, 'btnTails').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnTails = this.physics.add.image(rect.x + 235, btnYpos, 'btnTails').setScale(.4).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnTails.on('pointerover', function(pointer) {
 			btnTails.setScale(.6);
 		});
 		btnTails.on('pointerout', function(pointer) {
-			btnTails.setScale(.5);
+			btnTails.setScale(.4);
 		});
 
 		btnTails.on('pointerdown', () => {
@@ -156,13 +159,13 @@ class TitleScene extends Phaser.Scene {
             this.scene.start('gameScene');
 		});
 		
-		var btnWerehog = this.physics.add.image(rect.x + 550, btnYpos, 'btnWerehog').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnWerehog = this.physics.add.image(rect.x + 370, btnYpos, 'btnWerehog').setScale(.4).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnWerehog.on('pointerover', function(pointer) {
 			btnWerehog.setScale(.6);
 		});
 		btnWerehog.on('pointerout', function(pointer) {
-			btnWerehog.setScale(.5);
+			btnWerehog.setScale(.4);
 		});
 
 		btnWerehog.on('pointerdown', () => {
@@ -181,13 +184,13 @@ class TitleScene extends Phaser.Scene {
             this.scene.start('gameScene');
 		});
 		
-		var btnKnuckles = this.physics.add.image(rect.x + 750, btnYpos, 'btnKnuckles').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnKnuckles = this.physics.add.image(rect.x + 505, btnYpos, 'btnKnuckles').setScale(.4).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnKnuckles.on('pointerover', function(pointer) {
 			btnKnuckles.setScale(.6);
 		});
 		btnKnuckles.on('pointerout', function(pointer) {
-			btnKnuckles.setScale(.5);
+			btnKnuckles.setScale(.4);
 		});
 
 		btnKnuckles.on('pointerdown', () => {
@@ -206,13 +209,13 @@ class TitleScene extends Phaser.Scene {
             this.scene.start('gameScene');
 		});
 		
-		var btnShadow = this.physics.add.image(rect.x + 950, btnYpos, 'btnShadow').setScale(.5).setInteractive({ cursor: 'pointer' }).setDepth(6);
+		var btnShadow = this.physics.add.image(rect.x + 640, btnYpos, 'btnShadow').setScale(.4).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
 		btnShadow.on('pointerover', function(pointer) {
 			btnShadow.setScale(.6);
 		});
 		btnShadow.on('pointerout', function(pointer) {
-			btnShadow.setScale(.5);
+			btnShadow.setScale(.4);
 		});
 
 		btnShadow.on('pointerdown', () => {
@@ -221,6 +224,81 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('shadowIntro');
 			this.game.globalVars.character = 'shadow';
+			let name = form.getChildByName("name");
+			if(name.value != "") {
+				this.game.globalVars.playerName = name.value;
+				console.log(`username: ${name.value}`);
+			} else {
+				this.game.globalVars.playerName = 'Robotnik';
+			}
+            this.scene.start('gameScene');
+		});
+		
+		var btnAmy = this.physics.add.image(rect.x + 775, btnYpos, 'btnAmy').setScale(.4).setInteractive({ cursor: 'pointer' }).setDepth(6);
+
+		btnAmy.on('pointerover', function(pointer) {
+			btnAmy.setScale(.6);
+		});
+		btnAmy.on('pointerout', function(pointer) {
+			btnAmy.setScale(.4);
+		});
+
+		btnAmy.on('pointerdown', () => {
+			this.sound.play('start');
+			titleMusic.stop();
+			this.music.play();
+			//this.sound.play('shadowIntro');
+			this.game.globalVars.character = 'amy';
+			let name = form.getChildByName("name");
+			if(name.value != "") {
+				this.game.globalVars.playerName = name.value;
+				console.log(`username: ${name.value}`);
+			} else {
+				this.game.globalVars.playerName = 'Robotnik';
+			}
+            this.scene.start('gameScene');
+		});
+		
+		var btnSilver = this.physics.add.image(rect.x + 910, btnYpos, 'btnSilver').setScale(.4).setInteractive({ cursor: 'pointer' }).setDepth(6);
+
+		btnSilver.on('pointerover', function(pointer) {
+			btnSilver.setScale(.6);
+		});
+		btnSilver.on('pointerout', function(pointer) {
+			btnSilver.setScale(.4);
+		});
+
+		btnSilver.on('pointerdown', () => {
+			this.sound.play('start');
+			titleMusic.stop();
+			this.music.play();
+			//this.sound.play('shadowIntro');
+			this.game.globalVars.character = 'silver';
+			let name = form.getChildByName("name");
+			if(name.value != "") {
+				this.game.globalVars.playerName = name.value;
+				console.log(`username: ${name.value}`);
+			} else {
+				this.game.globalVars.playerName = 'Robotnik';
+			}
+            this.scene.start('gameScene');
+		});
+		
+		var btnSticks = this.physics.add.image(rect.x + 1045, btnYpos, 'btnSticks').setScale(.4).setInteractive({ cursor: 'pointer' }).setDepth(6);
+
+		btnSticks.on('pointerover', function(pointer) {
+			btnSticks.setScale(.6);
+		});
+		btnSticks.on('pointerout', function(pointer) {
+			btnSticks.setScale(.4);
+		});
+
+		btnSticks.on('pointerdown', () => {
+			this.sound.play('start');
+			titleMusic.stop();
+			this.music.play();
+			//this.sound.play('shadowIntro');
+			this.game.globalVars.character = 'sticks';
 			let name = form.getChildByName("name");
 			if(name.value != "") {
 				this.game.globalVars.playerName = name.value;

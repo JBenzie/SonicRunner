@@ -85,6 +85,30 @@ class GameScene extends Phaser.Scene {
                     frameHeight: 45
                 });
                 break;
+
+            case 'amy':
+                // load amy rose spritesheet
+                this.load.spritesheet("amy", "pub/assets/images/amyRose.png", {
+                    frameWidth: 35,
+                    frameHeight: 45
+                });
+                break;
+
+            case 'silver':
+                // load silver spritesheet
+                this.load.spritesheet("silver", "pub/assets/images/silver.png", {
+                    frameWidth: 45,
+                    frameHeight: 55
+                });
+                break;
+
+            case 'sticks':
+                // load sticks spritesheet
+                this.load.spritesheet("sticks", "pub/assets/images/sticks.png", {
+                    frameWidth: 40,
+                    frameHeight: 45
+                });
+                break;
         
             default:
                 // load sonic spritesheet
@@ -263,6 +287,99 @@ class GameScene extends Phaser.Scene {
                     repeat: 0
                 });
                 break;
+
+            case 'amy':
+                // setting amy animation
+                this.anims.create({
+                    key: "run",
+                    frames: this.anims.generateFrameNumbers("amy", {
+                        start: 0,
+                        end: 4
+                    }),
+                    frameRate: 15,
+                    repeat: -1
+                });
+
+                this.anims.create({
+                    key: "jump",
+                    frameRate: 13,
+                    frames: this.anims.generateFrameNumbers("amy", { 
+                        start: 5, 
+                        end: 8 }),
+                    repeat: 2
+                });
+
+                this.anims.create({
+                    key: "die",
+                    frameRate: 10,
+                    frames: this.anims.generateFrameNumbers("amy", { 
+                        start: 9, 
+                        end: 9 }),
+                    repeat: 0
+                });
+                break;
+
+            case 'silver':
+                // setting silver animation
+                this.anims.create({
+                    key: "run",
+                    frames: this.anims.generateFrameNumbers("silver", {
+                        start: 0,
+                        end: 7
+                    }),
+                    frameRate: 15,
+                    repeat: -1
+                });
+
+                this.anims.create({
+                    key: "jump",
+                    frameRate: 13,
+                    frames: this.anims.generateFrameNumbers("silver", { 
+                        start: 8, 
+                        end: 11 }),
+                    repeat: 0
+                });
+
+                this.anims.create({
+                    key: "die",
+                    frameRate: 10,
+                    frames: this.anims.generateFrameNumbers("silver", { 
+                        start: 12, 
+                        end: 12 }),
+                    repeat: 0
+                });
+                break;
+
+            case 'sticks':
+                // setting sonic animation
+                this.anims.create({
+                    key: "run",
+                    frames: this.anims.generateFrameNumbers("sticks", {
+                        start: 0,
+                        end: 3
+                    }),
+                    frameRate: 12,
+                    repeat: -1
+                });
+
+                this.anims.create({
+                    key: "jump",
+                    frameRate: 13,
+                    frames: this.anims.generateFrameNumbers("sticks", { 
+                        start: 4, 
+                        end: 12 }),
+                    repeat: 0
+                });
+
+                this.anims.create({
+                    key: "die",
+                    frameRate: 10,
+                    frames: this.anims.generateFrameNumbers("sticks", { 
+                        start: 13, 
+                        end: 13 }),
+                    repeat: 0
+                });
+                break;
         
             default:
                 this.anims.create({
@@ -321,7 +438,7 @@ class GameScene extends Phaser.Scene {
         //background
         this.bg = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'bg').setScale(1);
         this.frame = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'frame').setScale(1.15);
-        this.frame.setDepth(5);
+        this.frame.setDepth(10);
 
         //ring counter
         var frameRect = this.frame.getBounds();
@@ -456,7 +573,7 @@ class GameScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(this.game.gameOptions.playerStartPosition, this.game.config.height * 0.4, this.character).setScale(1.25);
         this.player.setSize(this.player.width, 15, true);
         this.player.setGravityY(this.game.gameOptions.playerGravity);
-        this.player.setDepth(3);
+        this.player.setDepth(5);
 
         // the player is not dying
         this.dying = false;
