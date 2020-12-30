@@ -1,7 +1,7 @@
 # Sonic Runner
 <strong>Gotta go FAST!</strong> An infinite runner featuring your favorite blue hedgehog. Built for Wyatt!
 
-Play as Sonic, Sonic the Werehog, Tails, Knuckles, or Shadow!
+Play as Sonic, Sonic the Werehog, Tails, Knuckles, and more!
 
 Based on the following tutorial: https://www.emanueleferonato.com/tag/endless-runner/
 
