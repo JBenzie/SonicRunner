@@ -1,21 +1,71 @@
 <!DOCTYPE html>
 
-<html lang="">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sonic Runner!</title>
     <script src="/pub/js/phaser.min.js">  
     </script>
     <script src="/pub/js/game.js" type="module"></script>
     <script src="/pub/js/gameScene.js" type="module"></script>
     <script src="/pub/js/titleScene.js" type="module"></script>
-    <!-- <script src="/pub/js/pouchdb-7.2.1.min.js" type="module"></script>
-    <script src="pouchdb.find.js"></script> -->
+
+    <style>
+        * {
+  user-select: none;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: #d3d8d8;
+}
+
+h2 {
+  text-align:center;
+}
+
+#input-box {
+  width:18.75em;
+  padding: 5px 5px 5px 5px;
+  margin: auto;
+  position: absolute;
+  left:calc(50% - 150px);
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: #0654fd;
+  border: 2px solid #42464b;
+  border-radius: 6px;
+}
+
+#input-box input {
+  margin: auto;
+  width: 20.75em;
+  padding: 8px 4px;
+  border-radius:5px;
+  border:none;
+}
+
+#input-box button {
+  width: 100%;
+  background-color: #37a69b;
+  border: none;
+  border-radius: 5px;
+  color:white;
+  padding: 8px 4px;
+}
+    </style>
 </head>
 
 <body style="display:flex;justify-content:center;align-items:center;background: black;">
 <script src="/socket.io/socket.io.js"></script>
+
+<div id="input-box" style="display: none">
+    <input type="text" id="name" name="name" placeholder="Enter a username..."><br/>
+</div>
 
 <div id="phaser-game"></div>
 

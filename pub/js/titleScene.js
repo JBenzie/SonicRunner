@@ -7,6 +7,7 @@ class TitleScene extends Phaser.Scene {
 	preload() {
 		var width = this.game.config.width;
 		var height = this.game.config.height;
+		let inputBox = document.getElementById('input-box');
 		
 		var loadingText = this.make.text({
 			x: width / 2,
@@ -40,6 +41,8 @@ class TitleScene extends Phaser.Scene {
 		this.load.on('complete', function () {
 		  loadingText.destroy();
 		  percentText.destroy();
+		  document.getElementById('name').value = '';
+		  inputBox.style.display = 'block';
 		});
 
 		this.load.image('frame', '/pub/assets/images/sonic_frame.png');
@@ -99,15 +102,38 @@ class TitleScene extends Phaser.Scene {
 			self.highscoreText = self.add.text(width / 2 - 210, height / 2 + 275, `HIGHSCORE: ${data.playerName} - ${data.score}`, { fontFamily: 'Orbitron', fontSize: 26, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 		});
 
-		var form = this.add.dom(660, 565).createFromCache('form');
-		form.setDepth(10);
-		form.setPerspective(800);
-		if (this.game.globalVars.playerName != 'null') {
-			let name = form.getChildByName("name");
-			name.value = this.game.globalVars.playerName;
-		}
+		// scale the box
+		const scaleBox = scale => {
+			let box = document.getElementById('input-box')
+			if (box) {
+			  box.style.transform = `scale(${scale})`
+			  box.style.transformOrigin = 'top left'
+			  box.style.top = `${this.game.canvas.offsetTop + this.scale.displaySize.height / 2 + (70) * scale}px`
+			  box.style.left = `${this.game.canvas.offsetLeft + this.scale.displaySize.width / 2 - (300 / 2) * scale}px`
+			}
+		  }
+	  
+		  // initial scale
+		  let scale = this.game.scale.displaySize.width / this.game.scale.gameSize.width
+		  scaleBox(scale)
+	  
+		  // on resize listener
+		  this.scale.on('resize', (gameSize, baseSize, displaySize, resolution) => {
+			let scale = displaySize.width / gameSize.width
+			scaleBox(scale)
+		  })
+		
+		let input = document.getElementById('name');
 
-		var text = this.add.text(rect.width / 2, height / 2 + 120, 'SELECT A RUNNER', { fontFamily: 'Orbitron', fontSize: 18, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
+		var name;
+
+		input.addEventListener("keyup", function(){
+			name = input.value;
+		}, false);
+
+		let inputBox = document.getElementById('input-box');
+
+		var txtSelectRunner = this.add.text(rect.width / 2, height / 2 + 120, 'SELECT A RUNNER', { fontFamily: 'Orbitron', fontSize: 18, color: '#ffffff', align: 'center' }).setShadow(2, 2, "#333333", 2, false, true).setDepth(6);
 		
 		var btnSonic = this.physics.add.image(rect.x + 100, btnYpos, 'btnSonic').setScale(.4).setInteractive({ cursor: 'pointer' }).setDepth(6);
 
@@ -124,13 +150,13 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('sonicIntro');
 			this.game.globalVars.character = 'sonic';
-			let name = form.getChildByName("name");
-			if(name.value != "") {
-				this.game.globalVars.playerName = name.value;
-				console.log(`username: ${name.value}`);
+			if(name != "") {
+				this.game.globalVars.playerName = name;
+				console.log(`username: ${name}`);
 			} else {
 				this.game.globalVars.playerName = 'Robotnik';
 			}
+			inputBox.style.display = 'none';
             this.scene.start('gameScene');
 		});
 		
@@ -149,13 +175,13 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('tailsIntro');
 			this.game.globalVars.character = 'tails';
-			let name = form.getChildByName("name");
-			if(name.value != "") {
-				this.game.globalVars.playerName = name.value;
-				console.log(`username: ${name.value}`);
+			if(name != "") {
+				this.game.globalVars.playerName = name;
+				console.log(`username: ${name}`);
 			} else {
 				this.game.globalVars.playerName = 'Robotnik';
 			}
+			inputBox.style.display = 'none';
             this.scene.start('gameScene');
 		});
 		
@@ -174,13 +200,13 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('werehogIntro');
 			this.game.globalVars.character = 'werehog';
-			let name = form.getChildByName("name");
-			if(name.value != "") {
-				this.game.globalVars.playerName = name.value;
-				console.log(`username: ${name.value}`);
+			if(name != "") {
+				this.game.globalVars.playerName = name;
+				console.log(`username: ${name}`);
 			} else {
 				this.game.globalVars.playerName = 'Robotnik';
 			}
+			inputBox.style.display = 'none';
             this.scene.start('gameScene');
 		});
 		
@@ -199,13 +225,13 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('knucklesIntro');
 			this.game.globalVars.character = 'knuckles';
-			let name = form.getChildByName("name");
-			if(name.value != "") {
-				this.game.globalVars.playerName = name.value;
-				console.log(`username: ${name.value}`);
+			if(name != "") {
+				this.game.globalVars.playerName = name;
+				console.log(`username: ${name}`);
 			} else {
 				this.game.globalVars.playerName = 'Robotnik';
 			}
+			inputBox.style.display = 'none';
             this.scene.start('gameScene');
 		});
 		
@@ -224,13 +250,13 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			this.sound.play('shadowIntro');
 			this.game.globalVars.character = 'shadow';
-			let name = form.getChildByName("name");
-			if(name.value != "") {
-				this.game.globalVars.playerName = name.value;
-				console.log(`username: ${name.value}`);
+			if(name != "") {
+				this.game.globalVars.playerName = name;
+				console.log(`username: ${name}`);
 			} else {
 				this.game.globalVars.playerName = 'Robotnik';
 			}
+			inputBox.style.display = 'none';
             this.scene.start('gameScene');
 		});
 		
@@ -249,13 +275,13 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			//this.sound.play('shadowIntro');
 			this.game.globalVars.character = 'amy';
-			let name = form.getChildByName("name");
-			if(name.value != "") {
-				this.game.globalVars.playerName = name.value;
-				console.log(`username: ${name.value}`);
+			if(name != "") {
+				this.game.globalVars.playerName = name;
+				console.log(`username: ${name}`);
 			} else {
 				this.game.globalVars.playerName = 'Robotnik';
 			}
+			inputBox.style.display = 'none';
             this.scene.start('gameScene');
 		});
 		
@@ -274,13 +300,13 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			//this.sound.play('shadowIntro');
 			this.game.globalVars.character = 'silver';
-			let name = form.getChildByName("name");
-			if(name.value != "") {
-				this.game.globalVars.playerName = name.value;
-				console.log(`username: ${name.value}`);
+			if(name != "") {
+				this.game.globalVars.playerName = name;
+				console.log(`username: ${name}`);
 			} else {
 				this.game.globalVars.playerName = 'Robotnik';
 			}
+			inputBox.style.display = 'none';
             this.scene.start('gameScene');
 		});
 		
@@ -299,13 +325,13 @@ class TitleScene extends Phaser.Scene {
 			this.music.play();
 			//this.sound.play('shadowIntro');
 			this.game.globalVars.character = 'sticks';
-			let name = form.getChildByName("name");
-			if(name.value != "") {
-				this.game.globalVars.playerName = name.value;
-				console.log(`username: ${name.value}`);
+			if(name != "") {
+				this.game.globalVars.playerName = name;
+				console.log(`username: ${name}`);
 			} else {
 				this.game.globalVars.playerName = 'Robotnik';
 			}
+			inputBox.style.display = 'none';
             this.scene.start('gameScene');
         });
 

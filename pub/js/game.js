@@ -10,13 +10,20 @@ window.onload = function() {
   //* Game scene */
   var config = {
     type: Phaser.AUTO,
-    width: 1334,
-    height: 750,
+    // width: 1334,
+    // height: 750,
     backgroundColor: 0x000000,
-    parent: "phaser-game",
-    dom: { 
-      createContainer: true 
+    //parent: "phaser-game",
+    scale: {
+      parent: 'phaser-game',  
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.AUTO,
+      width: 1334,
+      height: 750,
     },
+    /* dom: { 
+      createContainer: true 
+    }, */
     physics:{
       default: "arcade",
       arcade: {
